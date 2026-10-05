@@ -1,0 +1,11 @@
+.git
+.env
+data
+models
+**/__pycache__
+.pytest_cache
+*.zip
+*.log
+artifacts
+examples/*.mp4
+examples/*.png

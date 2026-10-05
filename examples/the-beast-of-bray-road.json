@@ -1,0 +1,116 @@
+{
+  "title": "The Beast of Bray Road: qualcosa camminava su due zampe",
+  "story": "Non furono gli occhi a spaventarla. Furono le mani. Nel buio di una strada di campagna, una creatura dal muso di lupo era accovacciata sul ciglio e stringeva qualcosa tra gli arti anteriori, come avrebbe fatto una persona. Quella strada esiste davvero. Si chiama Bray Road e attraversa i campi attorno a Elkhorn, nel Wisconsin. Alla fine degli anni Ottanta era soltanto una via tranquilla, stretta tra fattorie, fossi e distese di mais. Poi cominciarono le segnalazioni. Nell'autunno del 1989, Lori Endrizzi sta tornando a casa dopo il lavoro. I fari raggiungono una sagoma immobile sul ciglio. Per un istante, Lori crede che sia un uomo inginocchiato. Rallenta. Quando si avvicina, capisce che qualcosa non torna. Racconterà di aver visto pelo grigio-bruno, orecchie appuntite e un lungo muso da lupo. La creatura sembra nutrirsi di una carcassa. Ma il dettaglio che Lori non riuscirà più a dimenticare è un altro: il modo quasi umano in cui tiene il cibo tra le zampe. Due anni dopo, nella notte di Halloween del 1991, un'altra giovane automobilista percorre Bray Road. Si chiama Doristine Gipson. A un tratto, una ruota sobbalza come se avesse urtato qualcosa. Doristine si ferma e scende dall'auto per controllare. È allora che la vede. Dal buio emerge una grossa figura coperta di pelo. Doristine racconta che la creatura si alza e corre verso di lei. Riesce a rientrare in macchina e parte, ma la sagoma la insegue e raggiunge il retro dell'auto prima di perdere la presa. Nel dicembre del 1991, la giornalista Linda Godfrey riceve l'incarico di indagare su quelle voci. Si aspetta una curiosa storia di provincia. Trova invece testimoni disposti a raccontare. Poi un funzionario della contea apre un cassetto e le mostra una cartella. Sull'etichetta c'è scritto: lupo mannaro. Il 29 dicembre, il settimanale The Week pubblica l'inchiesta. La notizia supera presto i confini del Wisconsin e la creatura riceve un nome: la Bestia di Bray Road. Un nome perfetto per una leggenda, ma ancora incapace di spiegare che cosa sia apparso davanti a quei fari. Un lupo visto da un'angolazione insolita? Un cane di grandi dimensioni? Paura, suggestione, ricordi deformati dal tempo? Le testimonianze sono inquietanti, ma non dimostrano l'esistenza di una specie sconosciuta. E nei racconti non compare alcun essere umano che si trasformi in lupo. Solo una creatura mai identificata. Oggi Bray Road è ancora lì. Di giorno è una strada come tante; dopo il tramonto, ogni fosso diventa più profondo e ogni sagoma sembra muoversi. Se i tuoi fari illuminassero qualcosa di troppo umano per essere un animale, avresti davvero il coraggio di rallentare?",
+  "scenes": [
+    {
+      "id": "s_00000001",
+      "text": "Non furono gli occhi a spaventarla. Furono le mani. Nel buio di una strada di campagna, una creatura dal muso di lupo era accovacciata sul ciglio e stringeva qualcosa tra gli arti anteriori, come avrebbe fatto una persona.",
+      "prompt": "Vertical 9:16 cinematic documentary reconstruction, driver's view through the windshield of a late 1980s American sedan on a narrow rural asphalt road near Elkhorn Wisconsin at night, headlights revealing a hunched gray-brown shaggy figure at the roadside, wolf-like pointed ears and long muzzle barely discernible, humanlike crouching posture, harvested fields and a distant farm, restrained suspense, realistic analog film grain, muted blue and amber palette, central composition, no gore, no text, no logo, no watermark.",
+      "motion": "zoom_in",
+      "delivery": "natural",
+      "duration": null,
+      "effects": [{"effect": "rumble", "at": 0, "volume": 0.12}]
+    },
+    {
+      "id": "s_00000002",
+      "text": "Quella strada esiste davvero. Si chiama Bray Road e attraversa i campi attorno a Elkhorn, nel Wisconsin. Alla fine degli anni Ottanta era soltanto una via tranquilla, stretta tra fattorie, fossi e distese di mais. Poi cominciarono le segnalazioni.",
+      "prompt": "Vertical 9:16 cinematic establishing shot, late 1980s rural Wisconsin near Elkhorn at blue hour, narrow Bray Road cutting through harvested cornfields, grassy drainage ditches, scattered wooden farmhouses and silos, a single distant car approaching with headlights on, quiet ordinary landscape about to become unsettling, realistic documentary reconstruction, analog film texture, muted blue and amber palette, no creature visible, no text, no logo, no watermark.",
+      "motion": "pan_right",
+      "delivery": "natural",
+      "duration": null,
+      "effects": [{"effect": "wind", "at": 0, "volume": 0.10}]
+    },
+    {
+      "id": "s_00000003",
+      "text": "Nell'autunno del 1989, Lori Endrizzi sta tornando a casa dopo il lavoro. I fari raggiungono una sagoma immobile sul ciglio. Per un istante, Lori crede che sia un uomo inginocchiato. Rallenta. Quando si avvicina, capisce che qualcosa non torna.",
+      "prompt": "Vertical 9:16 cinematic documentary reconstruction, autumn night in 1989 on Bray Road near Elkhorn Wisconsin, late 1980s muted brown American sedan slowing on a narrow farm road, Lori represented by a young adult woman with shoulder-length brown hair and a plain dark coat seen tensely through the windshield, headlights reaching a hunched figure that could initially be mistaken for a kneeling person, figure still distant and indistinct beside a grassy ditch, harvested fields and a remote farmhouse, realistic analog film grain, muted blue and amber palette, no gore, no text, no logo, no watermark.",
+      "motion": "zoom_in",
+      "delivery": "natural",
+      "duration": null,
+      "effects": [{"effect": "heartbeat", "at": 1.2, "volume": 0.10}]
+    },
+    {
+      "id": "s_00000004",
+      "text": "Racconterà di aver visto pelo grigio-bruno, orecchie appuntite e un lungo muso da lupo. La creatura sembra nutrirsi di una carcassa. Ma il dettaglio che Lori non riuscirà più a dimenticare è un altro: il modo quasi umano in cui tiene il cibo tra le zampe.",
+      "prompt": "Vertical 9:16 cinematic close view reconstructing an eyewitness description, same gray-brown shaggy wolf-like figure kneeling at the roadside with long forelimbs and partly visible handlike extremities held palms upward, food entirely obscured by tall grass and shadow, unsettling humanlike posture, face mostly outside the beam of headlights, realistic anatomy within a speculative reconstruction, analog film grain, muted blue and amber palette, no transformation, no gore, no text, no logo, no watermark.",
+      "motion": "zoom_out",
+      "delivery": "natural",
+      "duration": null,
+      "effects": [{"effect": "rumble", "at": 0.5, "volume": 0.11}]
+    },
+    {
+      "id": "s_00000005",
+      "text": "Due anni dopo, nella notte di Halloween del 1991, un'altra giovane automobilista percorre Bray Road. Si chiama Doristine Gipson. A un tratto, una ruota sobbalza come se avesse urtato qualcosa. Doristine si ferma e scende dall'auto per controllare.",
+      "prompt": "Vertical 9:16 cinematic documentary reconstruction, Halloween night 1991 on the same rural Wisconsin farm road, a young woman with dark curly hair and a plain denim jacket standing beside the open driver's door of a dark blue early 1990s American sedan, looking down toward the front tire, headlights illuminating empty asphalt and a drainage ditch, ambiguous dark shape far beyond the light, no Halloween decorations, realistic analog film grain, muted blue and amber palette, no gore, no text, no logo, no watermark.",
+      "motion": "pan_left",
+      "delivery": "natural",
+      "duration": null,
+      "effects": [{"effect": "snap", "at": 0.8, "volume": 0.13}]
+    },
+    {
+      "id": "s_00000006",
+      "text": "È allora che la vede. Dal buio emerge una grossa figura coperta di pelo. Doristine racconta che la creatura si alza e corre verso di lei. Riesce a rientrare in macchina e parte, ma la sagoma la insegue e raggiunge il retro dell'auto prima di perdere la presa.",
+      "prompt": "Vertical 9:16 cinematic illustration reconstructing a reported encounter, rear three-quarter view of the same dark blue early 1990s American sedan accelerating along Bray Road at night, young woman with dark curly hair and denim jacket barely visible inside, large shaggy gray-brown wolf-like silhouette approaching the rear of the car from the roadside darkness, muzzle and pointed ears only suggested, red tail lights on asphalt, harvested fields, restrained motion blur and suspense, analog film grain, muted blue and amber palette, no gore, no text, no logo, no watermark.",
+      "motion": "zoom_out",
+      "delivery": "natural",
+      "duration": null,
+      "effects": [{"effect": "riser", "at": 0, "volume": 0.12}]
+    },
+    {
+      "id": "s_00000007",
+      "text": "Nel dicembre del 1991, la giornalista Linda Godfrey riceve l'incarico di indagare su quelle voci. Si aspetta una curiosa storia di provincia. Trova invece testimoni disposti a raccontare. Poi un funzionario della contea apre un cassetto e le mostra una cartella. Sull'etichetta c'è scritto: lupo mannaro.",
+      "prompt": "Vertical 9:16 cinematic documentary reconstruction, small Wisconsin county office in December 1991, female local reporter with straight light brown hair and simple glasses taking notes while an animal welfare officer places a worn manila folder on a desk, folder label turned away with no legible writing, landline telephone and period filing cabinets, warm desk lamp against cold window light, sober investigative mood, realistic analog film grain, muted blue and amber palette, no text, no logo, no watermark.",
+      "motion": "pan_right",
+      "delivery": "natural",
+      "duration": null,
+      "effects": []
+    },
+    {
+      "id": "s_00000008",
+      "text": "Il 29 dicembre, il settimanale The Week pubblica l'inchiesta. La notizia supera presto i confini del Wisconsin e la creatura riceve un nome: la Bestia di Bray Road. Un nome perfetto per una leggenda, ma ancora incapace di spiegare che cosa sia apparso davanti a quei fari.",
+      "prompt": "Vertical 9:16 cinematic historical reconstruction, small-town Wisconsin newspaper office in late December 1991, fresh newspapers spread across a desk with an original rough monochrome drawing of an upright canine figure, all columns and headlines out of focus and unreadable, landline phone and a period television news camera in the background, restrained atmosphere of a local story attracting attention, realistic analog film grain, muted blue and amber palette, no readable text, no logo, no watermark.",
+      "motion": "zoom_out",
+      "delivery": "natural",
+      "duration": null,
+      "effects": []
+    },
+    {
+      "id": "s_00000009",
+      "text": "Un lupo visto da un'angolazione insolita? Un cane di grandi dimensioni? Paura, suggestione, ricordi deformati dal tempo? Le testimonianze sono inquietanti, ma non dimostrano l'esistenza di una specie sconosciuta. E nei racconti non compare alcun essere umano che si trasformi in lupo. Solo una creatura mai identificata.",
+      "prompt": "Vertical 9:16 cinematic investigative illustration, empty rural Wisconsin roadside in weak dawn light, tall grass and a drainage ditch casting ambiguous shadows, an ordinary large canine silhouette far away at the edge of a harvested field, too distant for identification, no fantastical transformation, sober unresolved atmosphere, realistic analog film grain, muted blue and amber palette, no text, no logo, no watermark.",
+      "motion": "pan_left",
+      "delivery": "natural",
+      "duration": null,
+      "effects": [{"effect": "wind", "at": 0, "volume": 0.09}]
+    },
+    {
+      "id": "s_00000010",
+      "text": "Oggi Bray Road è ancora lì. Di giorno è una strada come tante; dopo il tramonto, ogni fosso diventa più profondo e ogni sagoma sembra muoversi. Se i tuoi fari illuminassero qualcosa di troppo umano per essere un animale, avresti davvero il coraggio di rallentare?",
+      "prompt": "Vertical 9:16 cinematic final illustration, driver's point of view from inside a late 1980s American sedan on the same lonely Bray Road near Elkhorn after dark, dashboard edge in the foreground, headlights revealing a distant crouching gray-brown shaggy figure at the roadside, pointed ears and humanlike posture barely suggested, harvested fields disappearing into darkness, visual echo of the opening scene with the creature still ambiguous, realistic analog film grain, muted blue and amber palette, no gore, no text, no logo, no watermark.",
+      "motion": "zoom_in",
+      "delivery": "natural",
+      "duration": null,
+      "effects": [{"effect": "rumble", "at": 0, "volume": 0.10}]
+    }
+  ],
+  "settings": {
+    "voice_provider": "gemini",
+    "image_provider": "cloudflare",
+    "voice": "Charon",
+    "voice_prompt": "Voce narrante italiana leggermente più profonda del registro abituale, calda e piena, senza forzare un basso estremo. Mantieni lo stesso timbro, la stessa altezza media e la stessa presenza per l'intera lettura e in ogni scena. Narrazione documentaristica calma e misurata, dizione chiara e intonazione naturale. Anche nei passaggi di paura o azione mantieni questo registro: niente sussurri, urla, tono urgente, voce roca aggiunta, imitazioni o cambi di personaggio. Crea le pause naturali seguendo la punteggiatura; non aggiungere parole o effetti vocali.",
+    "gemini_max_attempts": 1,
+    "speed": 0.96,
+    "pause_seconds": 0.25,
+    "audio_mode": "scenes",
+    "resolution": "1080x1920",
+    "fps": 30,
+    "fit": "cover",
+    "subtitle_size": 62,
+    "subtitle_bottom": 340,
+    "music_volume": 0.055,
+    "music_preset": "suspense",
+    "subtitles_enabled": true,
+    "ollama_model": "qwen2.5:3b",
+    "visual_style": "Ricostruzione cinematografica documentaristica mystery, Wisconsin rurale tra il 1989 e il 1991, strada asfaltata stretta vicino a Elkhorn, campi e fattorie, fotografia analogica realistica, colori blu freddo e ambra. La creatura è una rappresentazione delle testimonianze: pelo grigio e marrone, muso da lupo, orecchie appuntite, postura quasi umana, spesso nascosta nell'ombra, senza trasformazioni o bagliori soprannaturali. Composizione verticale 9:16 con soggetti centrali e margine inferiore libero per i sottotitoli. Nessuna scritta, nessun logo, nessun watermark, nessun gore."
+  }
+}

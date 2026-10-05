@@ -1,0 +1,307 @@
+{
+  "$defs": {
+    "Scene": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^s_[a-f0-9]{8}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "text": {
+          "maxLength": 5000,
+          "minLength": 1,
+          "title": "Text",
+          "type": "string"
+        },
+        "prompt": {
+          "default": "",
+          "maxLength": 12000,
+          "title": "Prompt",
+          "type": "string"
+        },
+        "motion": {
+          "default": "zoom_in",
+          "enum": [
+            "zoom_in",
+            "zoom_out",
+            "pan_left",
+            "pan_right",
+            "still"
+          ],
+          "title": "Motion",
+          "type": "string"
+        },
+        "delivery": {
+          "default": "natural",
+          "enum": [
+            "natural",
+            "ominous",
+            "emphatic",
+            "urgent",
+            "intimate"
+          ],
+          "title": "Delivery",
+          "type": "string"
+        },
+        "duration": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.1,
+              "maximum": 3600,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Duration"
+        },
+        "effects": {
+          "items": {
+            "$ref": "#/$defs/SoundCue"
+          },
+          "maxItems": 8,
+          "title": "Effects",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "text"
+      ],
+      "title": "Scene",
+      "type": "object"
+    },
+    "Settings": {
+      "additionalProperties": false,
+      "properties": {
+        "voice_provider": {
+          "default": "huggingface",
+          "enum": [
+            "huggingface",
+            "espeak",
+            "kokoro",
+            "gemini",
+            "chirp"
+          ],
+          "title": "Voice Provider",
+          "type": "string"
+        },
+        "image_provider": {
+          "default": "cloudflare",
+          "enum": [
+            "cloudflare",
+            "huggingface",
+            "comfyui"
+          ],
+          "title": "Image Provider",
+          "type": "string"
+        },
+        "voice": {
+          "default": "im_nicola",
+          "pattern": "^[a-zA-Z0-9_+(). -]{1,100}$",
+          "title": "Voice",
+          "type": "string"
+        },
+        "voice_prompt": {
+          "default": "",
+          "maxLength": 2000,
+          "title": "Voice Prompt",
+          "type": "string"
+        },
+        "gemini_max_attempts": {
+          "default": 2,
+          "maximum": 2,
+          "minimum": 1,
+          "title": "Gemini Max Attempts",
+          "type": "integer"
+        },
+        "speed": {
+          "default": 0.95,
+          "maximum": 2.0,
+          "minimum": 0.5,
+          "title": "Speed",
+          "type": "number"
+        },
+        "pause_seconds": {
+          "default": 0.2,
+          "maximum": 3,
+          "minimum": 0,
+          "title": "Pause Seconds",
+          "type": "number"
+        },
+        "audio_mode": {
+          "default": "scenes",
+          "enum": [
+            "scenes",
+            "full_generated",
+            "full"
+          ],
+          "title": "Audio Mode",
+          "type": "string"
+        },
+        "resolution": {
+          "default": "1080x1920",
+          "enum": [
+            "1080x1920",
+            "720x1280",
+            "540x960"
+          ],
+          "title": "Resolution",
+          "type": "string"
+        },
+        "fps": {
+          "default": 30,
+          "enum": [
+            24,
+            30
+          ],
+          "title": "Fps",
+          "type": "integer"
+        },
+        "fit": {
+          "default": "cover",
+          "enum": [
+            "cover",
+            "contain"
+          ],
+          "title": "Fit",
+          "type": "string"
+        },
+        "subtitle_size": {
+          "default": 62,
+          "maximum": 90,
+          "minimum": 32,
+          "title": "Subtitle Size",
+          "type": "integer"
+        },
+        "subtitle_bottom": {
+          "default": 340,
+          "maximum": 800,
+          "minimum": 100,
+          "title": "Subtitle Bottom",
+          "type": "integer"
+        },
+        "music_volume": {
+          "default": 0.07,
+          "maximum": 0.4,
+          "minimum": 0,
+          "title": "Music Volume",
+          "type": "number"
+        },
+        "music_preset": {
+          "default": "mist",
+          "enum": [
+            "mist",
+            "suspense",
+            "ritual"
+          ],
+          "title": "Music Preset",
+          "type": "string"
+        },
+        "subtitles_enabled": {
+          "default": true,
+          "title": "Subtitles Enabled",
+          "type": "boolean"
+        },
+        "ollama_model": {
+          "default": "qwen2.5:3b",
+          "pattern": "^[a-zA-Z0-9_./:-]{1,150}$",
+          "title": "Ollama Model",
+          "type": "string"
+        },
+        "visual_style": {
+          "default": "Stile cinematografico, composizione curata, luce coerente con la scena, nessuna scritta. Adatta atmosfera e colori al contenuto del copione. Mantieni coerenza tra soggetti, ambientazioni e stile nelle scene.",
+          "maxLength": 10000,
+          "title": "Visual Style",
+          "type": "string"
+        }
+      },
+      "title": "Settings",
+      "type": "object"
+    },
+    "SoundCue": {
+      "additionalProperties": false,
+      "properties": {
+        "effect": {
+          "enum": [
+            "wind",
+            "rumble",
+            "snap",
+            "impact",
+            "heartbeat",
+            "static",
+            "whisper_texture",
+            "riser"
+          ],
+          "title": "Effect",
+          "type": "string"
+        },
+        "at": {
+          "default": 0,
+          "maximum": 3600,
+          "minimum": 0,
+          "title": "At",
+          "type": "number"
+        },
+        "volume": {
+          "default": 0.25,
+          "maximum": 1,
+          "minimum": 0.02,
+          "title": "Volume",
+          "type": "number"
+        }
+      },
+      "required": [
+        "effect"
+      ],
+      "title": "SoundCue",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "title": {
+      "maxLength": 150,
+      "minLength": 1,
+      "title": "Title",
+      "type": "string"
+    },
+    "story": {
+      "default": "",
+      "maxLength": 100000,
+      "title": "Story",
+      "type": "string"
+    },
+    "scenes": {
+      "items": {
+        "$ref": "#/$defs/Scene"
+      },
+      "maxItems": 100,
+      "title": "Scenes",
+      "type": "array"
+    },
+    "settings": {
+      "$ref": "#/$defs/Settings"
+    },
+    "revision": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Revision"
+    }
+  },
+  "required": [
+    "title"
+  ],
+  "title": "Storyboard",
+  "type": "object"
+}

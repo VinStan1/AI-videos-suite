@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark"><title>AI Video Studio</title>
+<meta name="theme-color" content="#101017">
+<meta name="description" content="Il tuo studio video AI: dal copione al montaggio, con immagini, voce e sottotitoli. Crea contenuti di ogni genere con il tuo controllo creativo.">
+<link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/static/style.css?v=ai-studio-1"><script src="/static/app.js?v=ai-studio-1" defer></script>
+</head>
+<body>
+<aside class="sidebar">
+  <a href="/" class="brand" aria-label="AI Video Studio, pagina iniziale"><span class="brandmark" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M11 7 25 16 11 25Z"/><path d="M5 7v18"/></svg></span><span>AI Video<span class="brand-sub">STUDIO</span></span></a>
+  <div class="local-pill"><span class="dot"></span> Studio locale <span class="local-detail">/ AI opzionale</span></div>
+  <button id="new-project" class="primary wide">+ Nuovo progetto</button>
+  <p class="eyebrow">I TUOI PROGETTI</p><div id="project-list" class="project-list"></div>
+  <div class="sidebar-bottom">
+    <p class="eyebrow">SERVIZI OPZIONALI <button id="refresh-services" class="text-button" title="Aggiorna stato">Aggiorna</button></p>
+    <div id="services" class="services">Verifica dei servizi...</div>
+    <p class="muted small">I servizi spenti non bloccano i caricamenti manuali. Attivali separatamente dagli script Docker.</p>
+    <a href="/docs" target="_blank" class="muted small">Documentazione API</a><span class="version">v1.0.0</span>
+  </div>
+</aside>
+<main>
+  <div class="studio-topbar"><span>Il tuo spazio creativo</span><span class="workspace-label"><span class="dot"></span> WORKSPACE LOCALE</span></div>
+  <div id="welcome" class="welcome">
+    <div class="welcome-hero">
+      <div class="hero-copy">
+        <span class="hero-kicker"><span class="sparkle" aria-hidden="true">✦</span> UN SOLO STUDIO. INFINITE IDEE.</span>
+        <h1>La tua idea.<br>Il prossimo <span>video.</span></h1>
+        <p class="lead">Storie, tutorial, documentari, contenuti social. Dai forma a ogni idea con immagini, voce e sottotitoli, in uno studio tutto tuo.</p>
+        <div class="welcome-actions"><button id="welcome-new" class="primary">Crea un progetto <span aria-hidden="true">↗</span></button><button id="demo">Esplora la demo <span aria-hidden="true">▷</span></button></div>
+        <p class="hero-note"><span class="dot"></span> Genera con l’AI o carica i tuoi contenuti. Scegli tu.</p>
+      </div>
+      <div class="studio-preview" role="img" aria-label="Illustrazione di uno storyboard con scene astratte di viaggio, design e storytelling, e tracce di montaggio">
+        <div class="preview-bar"><span><span class="dot"></span> LA TUA PROSSIMA CREAZIONE</span><span>9:16</span></div>
+        <div class="preview-frames">
+          <div class="preview-frame frame-landscape"><span class="frame-index">01</span><div class="landscape-sun"></div><div class="landscape-ridge ridge-back"></div><div class="landscape-ridge ridge-front"></div><div class="frame-caption">Esplora.</div></div>
+          <div class="preview-frame frame-design"><span class="frame-index">02</span><div class="design-orbit"></div><div class="design-sphere"></div><div class="frame-caption">Spiega.</div></div>
+          <div class="preview-frame frame-story"><span class="frame-index">03</span><div class="story-window"></div><div class="story-horizon"></div><div class="frame-caption">Racconta.</div></div>
+        </div>
+        <div class="preview-timeline"><div class="timeline-ruler"><span>00:00</span><span>00:15</span><span>00:30</span></div><div class="timeline-clips"><span></span><span></span><span></span></div><div class="timeline-wave"></div><div class="timeline-playhead"></div></div>
+        <div class="preview-bottom"><span>Scene <span class="preview-plus">+</span> Voce <span class="preview-plus">+</span> Sottotitoli</span><span class="preview-ready">La tua visione, in sequenza.</span></div>
+      </div>
+    </div>
+    <div class="genre-strip"><span>SPAZIO A OGNI GENERE</span><span>Storytelling</span><span>Educational</span><span>Social &amp; promo</span><span>Viaggi &amp; lifestyle</span></div>
+    <div class="feature-grid"><div><span class="feature-number">01 / CREA</span><h3>Parti dalla tua idea</h3><p>Trasforma il copione in scene. Organizza lo storyboard e scegli lo stile di ogni progetto.</p></div><div><span class="feature-number">02 / PERSONALIZZA</span><h3>Decidi tu cosa generare</h3><p>Usa i provider AI per immagini e voce, oppure carica i tuoi media, audio e sottotitoli.</p></div><div><span class="feature-number">03 / ESPORTA</span><h3>Porta il video fuori dallo studio</h3><p>Rivedi l’anteprima ed esporta il tuo MP4 verticale, con tutti i file del progetto.</p></div></div>
+    <p class="muted small demo-note">La demo include immagini segnaposto e una voce di prova, per esplorare il flusso senza modelli AI.</p>
+  </div>
+  <div id="editor" hidden>
+    <header class="project-header"><div><p class="eyebrow">WORKSPACE / <span id="project-id"></span></p><input id="title" class="title-input" maxlength="150" aria-label="Titolo progetto"><span id="save-state" class="muted small">Tutto salvato</span></div><div class="row"><button id="save" class="primary">Salva modifiche</button><button id="export">Esporta progetto ZIP</button></div></header>
+    <nav class="stages" aria-label="Fasi del progetto"><a href="#script-panel"><span>01</span> Copione</a><a href="#scenes-panel"><span>02</span> Scene e immagini</a><a href="#voice-panel"><span>03</span> Voce</a><a href="#captions-panel"><span>04</span> Sottotitoli</a><a href="#export-panel"><span>05</span> Montaggio</a></nav>
+    <div id="job-box" class="job-box" hidden><div class="row between"><strong id="job-status"></strong><button id="cancel-job" class="danger">Annulla</button></div><progress id="job-progress" max="100" value="0"></progress><pre id="job-message"></pre><button id="retry-job" hidden>Ripeti operazione</button></div>
+    <section class="panel" id="script-panel"><div class="section-heading"><div><span class="eyebrow">01 / COPIONE</span><h2>Ogni video parte da un’idea.</h2></div><label class="file-button">Carica TXT<input type="file" id="story-file" accept=".txt,text/plain" hidden></label></div>
+      <textarea id="story" rows="5" aria-label="Copione originale" placeholder="Incolla il copione: una storia, un tutorial, una presentazione… La divisione in scene mantiene il tuo testo."></textarea>
+      <div class="row wrap"><label class="inline-label">Parole per scena <input id="target-words" type="number" value="30" min="5" max="150"></label><button id="split">Dividi in scene</button><button id="download-storyboard">Esporta storyboard JSON</button><label class="file-button">Importa storyboard JSON<input type="file" id="storyboard-file" accept=".json" hidden></label></div>
+      <p class="muted small">Copione originale e testo delle scene sono separati: per aggiornare il video modifica le scene o ripeti la divisione. Una nuova divisione scollega i contenuti precedenti, conservandone i file.</p>
+    </section>
+    <section class="panel" id="scenes-panel"><div class="section-heading"><div><span class="eyebrow">02 / REGIA</span><h2>Dai forma alla tua visione.</h2></div><span id="scene-count" class="badge"></span></div>
+      <label>Stile visivo e riferimenti di continuita'<textarea id="visual-style" rows="2"></textarea></label><label>Motore immagini<select id="image-provider"><option value="cloudflare">Cloudflare Workers AI - FLUX.1 Schnell</option><option value="huggingface">Hugging Face Inference - API cloud gratuita con quota</option><option value="comfyui">ComfyUI - servizio locale</option></select></label>
+      <div class="row wrap"><button id="add-scene">+ Aggiungi scena</button><button id="prompts">Prompt mancanti con Ollama</button><button id="download-prompts">Scarica prompt per ChatGPT</button><label class="file-button">Carica immagini in ordine<input type="file" id="bulk-images" accept="image/png,image/jpeg,image/webp" multiple hidden></label><button id="images">Genera immagini mancanti</button></div>
+      <p class="muted small">Per il caricamento multiplo usa 01.png, 02.png... Il numero dei file deve coincidere con quello delle scene. Puoi anche caricare o sostituire ogni immagine singolarmente.</p>
+      <div id="scene-list"></div>
+    </section>
+    <section class="panel" id="voice-panel"><div class="section-heading"><div><span class="eyebrow">03 / NARRAZIONE</span><h2>Trova la voce del tuo video.</h2></div><span id="voice-status" class="badge"></span></div>
+      <div class="settings-grid"><label>Sorgente audio<select id="audio-mode"><option value="scenes">Audio generato o caricato per scena</option><option value="full_generated">Narrazione completa generata (1 richiesta TTS)</option><option value="full">Narrazione completa caricata</option></select></label><label>Motore voce<select id="voice-provider"><option value="chirp">Chirp 3 HD - Google Cloud TTS</option><option value="gemini">Gemini Flash TTS - API Google</option><option value="huggingface">Hugging Face Inference - API cloud gratuita con quota</option><option value="espeak">eSpeak - robotico, solo prova, nessun modello</option><option value="kokoro">Kokoro - servizio voce opzionale</option></select></label><label>Voce<select id="voice-name"><option value="Charon">Charon / narrativo</option></select></label><label>Velocita'<input id="speed" type="number" min="0.5" max="2" step="0.05"></label><label>Pausa tra scene, secondi<input id="pause" type="number" min="0" max="3" step="0.05"></label></div>
+      <label>Prompt vocale comune (Gemini)<textarea id="voice-prompt" rows="3" maxlength="2000" placeholder="Voce leggermente piu' profonda, timbro uniforme, senza sussurri o cambi di voce."></textarea></label>
+      <label><input id="gemini-retry" type="checkbox"> Gemini: ritenta una volta se il modello risponde senza audio (consuma un'altra chiamata)</label>
+      <div class="row wrap"><button id="voice" class="primary">Genera voci mancanti</button><label class="file-button">Carica narrazione completa<input type="file" data-upload="full_audio" accept="audio/*,.m4a,.mp4,.webm" hidden></label><button id="assemble">Assembla / aggiorna audio</button><button id="remove-full">Scollega audio unico</button></div>
+      <p class="muted small">La narrazione completa generata unisce le scene e usa una sola richiesta TTS, con regia Naturale e prompt vocale comune. Le regie delle singole scene e la pausa locale tra scene valgono solo per l'audio per scena. Se abiliti il tentativo aggiuntivo di Gemini, un errore senza audio puo' consumare una seconda chiamata. Per cambi immagine precisi usa Whisper; senza allineamento, le durate sono proporzionali al testo.</p>
+      <div id="narration-player"></div>
+    </section>
+    <section class="panel" id="captions-panel"><div class="section-heading"><div><span class="eyebrow">04 / SOTTOTITOLI</span><h2>Ogni parola, al momento giusto.</h2></div><span id="caption-status" class="badge"></span></div>
+      <div class="row wrap"><label class="inline-label">Generazione<select id="caption-method"><option value="whisper">Whisper + parole del copione (consigliato)</option><option value="timings">Timestamp restituiti dal TTS</option><option value="estimate">Bozza stimata - da correggere</option></select></label><button id="captions">Genera sottotitoli</button><label class="file-button">Carica SRT<input type="file" data-upload="subtitles" accept=".srt,text/plain" hidden></label><button id="confirm-captions" hidden>Mantieni SRT comunque</button><button id="remove-captions">Scollega SRT corrente</button></div>
+      <p class="notice">Whisper ricava i tempi dall'audio, poi il sistema riallinea le parole esatte del copione e corregge automaticamente nomi e punteggiatura. Se audio e testo divergono troppo, la generazione si ferma. La bozza stimata non e' un allineamento vocale.</p>
+      <details id="srt-details"><summary>Editor SRT: modifica testo e timestamp</summary><textarea id="srt-editor" rows="10" spellcheck="false" placeholder="1&#10;00:00:00,000 --> 00:00:02,000&#10;La prima frase"></textarea><button id="save-captions">Salva SRT manuale</button></details>
+    </section>
+    <section class="panel" id="export-panel"><div class="section-heading"><div><span class="eyebrow">05 / ESPORTAZIONE</span><h2>La tua idea prende vita.</h2></div><span class="badge">9:16 / MP4</span></div>
+      <div class="settings-grid"><label>Risoluzione finale<select id="resolution"><option>1080x1920</option><option>720x1280</option><option>540x960</option></select></label><label>Fotogrammi al secondo<select id="fps"><option value="30">30</option><option value="24">24</option></select></label><label>Immagini<select id="fit"><option value="cover">Riempi e ritaglia al centro</option><option value="contain">Mostra tutto con bordi scuri</option></select></label><label>Grandezza sottotitoli<input id="subtitle-size" type="number" min="32" max="90"></label><label>Distanza dal basso (su 1920 px)<input id="subtitle-bottom" type="number" min="100" max="800"></label><label>Volume sottofondo (0 - 0.4)<input id="music-volume" type="number" min="0" max="0.4" step="0.01"></label><label>Atmosfera originale<select id="music-preset"><option value="mist">Nebbia</option><option value="suspense">Tensione</option><option value="ritual">Rituale</option></select></label></div>
+      <div class="row wrap"><label class="check"><input id="subtitles-enabled" type="checkbox">Mostra sottotitoli</label><button id="music">Crea sottofondo originale</button><label class="file-button">Carica musica / ambiente<input type="file" data-upload="music" accept="audio/*,.m4a" hidden></label><button id="remove-music">Scollega sottofondo</button><span id="music-status" class="muted small"></span></div>
+      <div class="music-library"><h3>Libreria di sottofondi</h3><p class="muted small">Carica una traccia una sola volta e riutilizzala nei progetti. Nel video verra' ripetuta e tagliata automaticamente sulla durata della narrazione.</p><div class="row wrap"><select id="music-library-select" aria-label="Traccia dalla libreria"><option value="">Nessuna traccia salvata</option></select><audio id="music-library-preview" controls preload="metadata" hidden></audio><button id="use-library-music">Usa come sottofondo</button><label class="file-button">Aggiungi traccia alla libreria<input id="upload-library-music" type="file" accept="audio/*,.m4a,.mp4,.webm" hidden></label><button id="delete-library-music" class="danger">Elimina dalla libreria</button><button id="refresh-music-library">Aggiorna elenco</button></div></div>
+      <div class="render-actions"><button id="preview" class="primary">Crea anteprima 540p</button><button id="render" class="primary">Esporta video finale</button></div>
+      <details><summary>Completa automaticamente le fasi mancanti</summary><p class="muted">Riutilizza i contenuti caricati. Non sovrascrive i file manuali. Per immagini cloud configura HF_TOKEN; per ComfyUI avvia il servizio locale.</p><label class="check"><input id="auto-images" type="checkbox">Genera immagini mancanti con il motore selezionato</label><label class="check"><input id="allow-estimated" type="checkbox">Accetto sottotitoli stimati quando il TTS non fornisce timestamp</label><button id="complete">Completa e monta</button></details>
+      <div id="warnings"></div><div id="video-result"></div>
+    </section>
+    <section class="panel compact"><details><summary>Impostazioni avanzate e limiti</summary><label>Modello Ollama<input id="ollama-model" type="text"></label><p>Sottofondi ed effetti sonori sono creati localmente senza account o API. Kokoro, Whisper, Ollama e ComfyUI sono servizi locali opzionali; Chirp, Gemini, Hugging Face e Cloudflare sono provider cloud opzionali e richiedono le rispettive credenziali e condizioni. I testi inviati a Chirp o Gemini escono dal computer e consumano la quota del progetto Google. Verifica sempre gli URL configurati. L'app non pubblica su TikTok e non include modelli nel pacchetto.</p><p>Chiudere il browser non ferma un lavoro. Arrestare il container interrompe la fase attiva: al riavvio ripeti l'azione; file completati e clip del montaggio vengono riutilizzati. Un modello che sta elaborando una richiesta puo' finire il calcolo anche dopo l'annullamento nell'app: per interromperlo arresta il suo container dedicato.</p><p>Usa solo immagini, musica e voci di cui hai i diritti. Rivedi il risultato e segnala correttamente ricostruzioni e contenuti AI prima di pubblicare.</p></details></section>
+  </div>
+  <footer>AI VIDEO STUDIO <span>Ogni idea merita il suo video.</span></footer>
+</main>
+<div id="toast" role="status" hidden></div>
+</body></html>

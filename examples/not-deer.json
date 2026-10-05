@@ -1,0 +1,119 @@
+{
+  "title": "Not Deer: quando un cervo smette di sembrarlo",
+  "story": "Se di notte vedi un cervo fermo in mezzo alla strada, non c'è niente di strano. Diventa strano quando non scappa. Ti guarda. E quando ti avvicini, inizi ad accorgerti che qualcosa non torna. Le zampe sembrano troppo lunghe, i movimenti sono rigidi, quasi meccanici, e gli occhi sembrano fissarti in un modo che un cervo non dovrebbe fare. E secondo alcuni racconti, a volte si alza su due zampe. Negli Appalachi queste creature hanno ricevuto un nome: Not Deer. Non cervi. Le storie hanno iniziato a diffondersi online soprattutto tra il 2019 e il 2020, fino a diventare un vero fenomeno su Internet. Ma c'è un dettaglio interessante. Il Not Deer non sembra essere un'antica leggenda degli Appalachi, come spesso viene raccontato online. È soprattutto una leggenda moderna cresciuta sul web. E potrebbe perfino esserci una spiegazione. Una malattia dei cervidi chiamata Chronic Wasting Disease può provocare dimagrimento estremo, movimenti anomali e una minore paura dell'uomo. Quindi forse il Not Deer è soltanto un animale malato trasformato da Internet in un mostro. Ma immagina di non sapere tutto questo. Se lo vedessi immobile davanti alla tua macchina, nel cuore della notte, continueresti ad avvicinarti?",
+  "scenes": [
+    {
+      "id": "s_00000001",
+      "text": "Se di notte vedi un cervo fermo in mezzo alla strada, non c'è niente di strano.",
+      "prompt": "Vertical 9:16 realistic dashcam-style night view on a remote Appalachian mountain road, car headlights illuminating an ordinary white-tailed deer standing motionless in the middle of the asphalt, dense dark forest on both sides, subtle windshield reflections and believable low-light camera noise, the deer still appears completely normal, restrained documentary horror, centered composition with lower space for subtitles, no gore, no text, no logo, no watermark.",
+      "motion": "zoom_in",
+      "delivery": "natural",
+      "duration": null,
+      "effects": [
+        {"effect": "wind", "at": 0, "volume": 0.08},
+        {"effect": "rumble", "at": 1.1, "volume": 0.08}
+      ]
+    },
+    {
+      "id": "s_00000002",
+      "text": "Diventa strano quando non scappa. Ti guarda.",
+      "prompt": "Vertical 9:16 realistic nighttime dashcam reconstruction, the same white-tailed deer now closer but still motionless in the headlights, head turned precisely toward the approaching car, naturally reflective eyes fixed on the driver, empty Appalachian road, deep black forest and faint ground fog, mostly normal anatomy with an almost imperceptible uncanny quality, realistic low-light photography, no gore, no text, no logo, no watermark.",
+      "motion": "zoom_in",
+      "delivery": "natural",
+      "duration": null,
+      "effects": [
+        {"effect": "heartbeat", "at": 0.7, "volume": 0.10}
+      ]
+    },
+    {
+      "id": "s_00000003",
+      "text": "E quando ti avvicini, inizi ad accorgerti che qualcosa non torna. Le zampe sembrano troppo lunghe. I movimenti sono rigidi, quasi meccanici.",
+      "prompt": "Vertical 9:16 cinematic realistic horror reconstruction of the same deer walking through car headlights on an Appalachian road at night, proportions subtly wrong rather than grotesque, legs slightly too long, joints appearing awkward and stiff, realistic fur and plausible anatomy, disturbing uncanny valley effect, body partly concealed by darkness, analog documentary grain, no gore, no text, no logo, no watermark.",
+      "motion": "pan_right",
+      "delivery": "natural",
+      "duration": null,
+      "effects": [
+        {"effect": "riser", "at": 0, "volume": 0.11},
+        {"effect": "snap", "at": 1.5, "volume": 0.12}
+      ]
+    },
+    {
+      "id": "s_00000004",
+      "text": "Gli occhi sembrano fissarti in un modo che un cervo non dovrebbe fare. E secondo alcuni racconti, a volte si alza su due zampe.",
+      "prompt": "Vertical 9:16 analog documentary horror scene on the same Appalachian forest road at night, a deer-like silhouette rising unnaturally onto its hind legs at the outer edge of the headlights, tall thin body partially hidden by darkness and tree branches, subtle believable pose without transformation effects or demonic features, found-footage realism, cold muted colors, no gore, no text, no logo, no watermark.",
+      "motion": "zoom_out",
+      "delivery": "natural",
+      "duration": null,
+      "effects": [
+        {"effect": "impact", "at": 0.8, "volume": 0.14},
+        {"effect": "static", "at": 1.5, "volume": 0.08}
+      ]
+    },
+    {
+      "id": "s_00000005",
+      "text": "Negli Appalachi queste creature hanno ricevuto un nome: Not Deer. Non cervi.",
+      "prompt": "Vertical 9:16 eerie cinematic Appalachian forest at dusk, the same distorted deer-like silhouette standing between tall trees in the distance, only part of its body visible through branches, unusually long limbs suggested without a clear reveal, drifting mist, realistic documentary photography and subtle analog grain, ominous restrained atmosphere, no gore, no text, no logo, no watermark.",
+      "motion": "zoom_in",
+      "delivery": "natural",
+      "duration": null,
+      "effects": [
+        {"effect": "wind", "at": 0, "volume": 0.10},
+        {"effect": "rumble", "at": 1.2, "volume": 0.09}
+      ]
+    },
+    {
+      "id": "s_00000006",
+      "text": "Le storie hanno iniziato a diffondersi online soprattutto tra il 2019 e il 2020, fino a diventare un vero fenomeno su Internet. Ma il Not Deer non sembra essere un'antica leggenda degli Appalachi, come spesso viene raccontato. È soprattutto una leggenda moderna cresciuta sul web.",
+      "prompt": "Vertical 9:16 dark documentary investigation scene, laptop glowing in a dark room with anonymous forum posts and social media layouts blurred and completely unreadable, Appalachian forest photographs pinned on a wall, one photograph containing a distant deer silhouette, restrained analog grain, modern folklore research atmosphere, no readable text, no interface logos, no watermark.",
+      "motion": "pan_left",
+      "delivery": "natural",
+      "duration": null,
+      "effects": [
+        {"effect": "static", "at": 0.3, "volume": 0.08}
+      ]
+    },
+    {
+      "id": "s_00000007",
+      "text": "E potrebbe perfino esserci una spiegazione. Una malattia dei cervidi chiamata Chronic Wasting Disease può provocare dimagrimento estremo, movimenti anomali e una minore paura dell'uomo. Quindi forse il Not Deer è soltanto un animale malato trasformato da Internet in un mostro.",
+      "prompt": "Vertical 9:16 sober wildlife documentary photograph of an unusually thin white-tailed deer standing near an Appalachian forest road in overcast daylight, visible weight loss and uncertain posture without wounds or gore, realistic anatomy and natural environment, respectful scientific documentary aesthetic, subdued unsettling mood, centered animal with lower space for subtitles, no text, no logo, no watermark.",
+      "motion": "zoom_in",
+      "delivery": "natural",
+      "duration": null,
+      "effects": [
+        {"effect": "wind", "at": 0, "volume": 0.08}
+      ]
+    },
+    {
+      "id": "s_00000008",
+      "text": "Ma immagina di non sapere tutto questo. Se lo vedessi immobile davanti alla tua macchina, nel cuore della notte... continueresti ad avvicinarti?",
+      "prompt": "Vertical 9:16 realistic night dashcam view returning to the deserted Appalachian road from the opening, headlights illuminating empty asphalt and dense forest, the same deer-like silhouette barely visible at the extreme edge of the trees, almost impossible to notice at first glance, ambiguous proportions, unsettling found-footage realism, heavy darkness and subtle fog, unresolved ending, no gore, no text, no logo, no watermark.",
+      "motion": "zoom_in",
+      "delivery": "natural",
+      "duration": null,
+      "effects": [
+        {"effect": "rumble", "at": 0, "volume": 0.08},
+        {"effect": "heartbeat", "at": 1.1, "volume": 0.10}
+      ]
+    }
+  ],
+  "settings": {
+    "voice_provider": "gemini",
+    "image_provider": "cloudflare",
+    "voice": "Charon",
+    "voice_prompt": "Voce narrante italiana leggermente più profonda del registro abituale, calda, piena e credibile. Mantieni lo stesso timbro, la stessa altezza media e la stessa distanza dal microfono per l'intera narrazione. Tono documentaristico calmo e coinvolgente, con tensione trattenuta e dizione nitida. Non sussurrare, non urlare, non accelerare nei passaggi inquietanti e non interpretare personaggi diversi. Segui la punteggiatura per creare pause naturali. Leggi soltanto il testo, senza aggiungere parole o effetti vocali.",
+    "gemini_max_attempts": 1,
+    "speed": 0.97,
+    "pause_seconds": 0.2,
+    "audio_mode": "full_generated",
+    "resolution": "1080x1920",
+    "fps": 30,
+    "fit": "cover",
+    "subtitle_size": 62,
+    "subtitle_bottom": 340,
+    "music_volume": 0.05,
+    "music_preset": "suspense",
+    "subtitles_enabled": true,
+    "ollama_model": "qwen2.5:3b",
+    "visual_style": "Ricostruzione cinematografica documentaristica in verticale 9:16, horror analogico realistico e found footage ambientato sui monti Appalachi. Mantieni coerenti la stessa strada, la stessa automobile e lo stesso cervo dalla pelliccia bruno-grigia. L'anatomia diventa anomala in modo graduale e sottile: niente demone, niente trasformazione esplicita, niente occhi luminosi soprannaturali. Fotografia notturna credibile, fari dell'auto, foresta scura, foschia leggera, colori freddi e grana analogica. Soggetto centrale e margine inferiore libero per i sottotitoli. Nessuna scritta leggibile, nessun logo, nessun watermark, nessun gore."
+  }
+}

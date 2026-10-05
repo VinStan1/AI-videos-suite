@@ -1,0 +1,10 @@
+{
+  "title": "Il lago dopo il tramonto",
+  "story": "Nessuno tornava al lago dopo il tramonto. Quella sera, qualcosa si mosse tra le canne. Non era un animale. Era troppo alto. Poi, dal buio, una voce pronuncio' il mio nome.",
+  "scenes": [
+    {"id": "s_00000001", "text": "Nessuno tornava al lago dopo il tramonto.", "prompt": "Vertical cinematic illustration, abandoned mountain lake at dusk, reeds in the foreground, mist over dark water, no text.", "motion": "zoom_in", "delivery": "natural", "duration": null},
+    {"id": "s_00000002", "text": "Quella sera, qualcosa si mosse tra le canne.", "prompt": "Vertical cinematic illustration, close view of reeds bending at the edge of the same dark lake, subtle ripples, restrained suspense, no text.", "motion": "pan_right", "delivery": "ominous", "duration": null, "effects": [{"effect": "wind", "at": 0, "volume": 0.14}, {"effect": "snap", "at": 1.1, "volume": 0.28}]},
+    {"id": "s_00000003", "text": "Non era un animale. [[pausa=0.35]] Era troppo alto.", "prompt": "Vertical cinematic illustration, an impossibly tall silhouette partly concealed by the reeds of the same mountain lake, creature barely visible, no gore, no text.", "motion": "zoom_in", "delivery": "emphatic", "duration": null, "effects": [{"effect": "impact", "at": 1.2, "volume": 0.22}]},
+    {"id": "s_00000004", "text": "Poi, dal buio, una voce pronuncio' il mio nome.", "prompt": "Vertical cinematic illustration, first-person view across a silent misty lake, a faint reflection in the water, the creature remains unseen, no text.", "motion": "zoom_out", "delivery": "intimate", "duration": null}
+  ]
+}
