@@ -1,5 +1,70 @@
 {
   "$defs": {
+    "DiagramEdge": {
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "title": "Source",
+          "type": "string"
+        },
+        "target": {
+          "title": "Target",
+          "type": "string"
+        },
+        "label": {
+          "default": "",
+          "maxLength": 80,
+          "title": "Label",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source",
+        "target"
+      ],
+      "title": "DiagramEdge",
+      "type": "object"
+    },
+    "DiagramNode": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-zA-Z][a-zA-Z0-9_-]{0,63}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "label": {
+          "maxLength": 120,
+          "title": "Label",
+          "type": "string"
+        },
+        "position": {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            }
+          ],
+          "title": "Position",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "label",
+        "position"
+      ],
+      "title": "DiagramNode",
+      "type": "object"
+    },
     "Scene": {
       "additionalProperties": false,
       "properties": {
@@ -44,6 +109,12 @@
           "title": "Delivery",
           "type": "string"
         },
+        "voice_prompt": {
+          "default": "",
+          "maxLength": 2000,
+          "title": "Voice Prompt",
+          "type": "string"
+        },
         "duration": {
           "anyOf": [
             {
@@ -58,6 +129,16 @@
           "default": null,
           "title": "Duration"
         },
+        "time_unit": {
+          "default": "seconds",
+          "enum": [
+            "seconds",
+            "scene",
+            "speech"
+          ],
+          "title": "Time Unit",
+          "type": "string"
+        },
         "effects": {
           "items": {
             "$ref": "#/$defs/SoundCue"
@@ -65,10 +146,36 @@
           "maxItems": 8,
           "title": "Effects",
           "type": "array"
+        },
+        "assets": {
+          "items": {
+            "$ref": "#/$defs/VisualAsset"
+          },
+          "maxItems": 32,
+          "title": "Assets",
+          "type": "array"
+        },
+        "visual_events": {
+          "items": {
+            "$ref": "#/$defs/VisualEvent"
+          },
+          "maxItems": 200,
+          "title": "Visual Events",
+          "type": "array"
+        },
+        "transition": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Transition"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
         }
       },
       "required": [
-        "id",
         "text"
       ],
       "title": "Scene",
@@ -77,6 +184,15 @@
     "Settings": {
       "additionalProperties": false,
       "properties": {
+        "video_mode": {
+          "default": "narrative",
+          "enum": [
+            "narrative",
+            "educational"
+          ],
+          "title": "Video Mode",
+          "type": "string"
+        },
         "voice_provider": {
           "default": "huggingface",
           "enum": [
@@ -258,6 +374,421 @@
         "effect"
       ],
       "title": "SoundCue",
+      "type": "object"
+    },
+    "Transition": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "default": "cut",
+          "enum": [
+            "cut",
+            "crossfade",
+            "slide_left",
+            "slide_right",
+            "zoom_in",
+            "zoom_out",
+            "zoom_through",
+            "whip_left",
+            "whip_right",
+            "blur"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        "duration": {
+          "default": 0.35,
+          "maximum": 2,
+          "minimum": 0,
+          "title": "Duration",
+          "type": "number"
+        },
+        "target": {
+          "default": [
+            0.5,
+            0.5
+          ],
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            }
+          ],
+          "title": "Target",
+          "type": "array"
+        },
+        "time_unit": {
+          "default": "seconds",
+          "enum": [
+            "seconds",
+            "scene",
+            "speech"
+          ],
+          "title": "Time Unit",
+          "type": "string"
+        }
+      },
+      "title": "Transition",
+      "type": "object"
+    },
+    "VisualAsset": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-zA-Z][a-zA-Z0-9_-]{0,63}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "prompt": {
+          "default": "",
+          "maxLength": 12000,
+          "title": "Prompt",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "title": "VisualAsset",
+      "type": "object"
+    },
+    "VisualEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "enum": [
+            "show_image",
+            "reframe",
+            "zoom",
+            "pan",
+            "crop",
+            "focus",
+            "show_text",
+            "headline",
+            "label",
+            "arrow",
+            "circle",
+            "highlight",
+            "line",
+            "statistic",
+            "diagram",
+            "background"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        "start": {
+          "default": 0,
+          "maximum": 3600,
+          "minimum": 0,
+          "title": "Start",
+          "type": "number"
+        },
+        "end": {
+          "exclusiveMinimum": 0,
+          "maximum": 3600,
+          "title": "End",
+          "type": "number"
+        },
+        "time_unit": {
+          "anyOf": [
+            {
+              "enum": [
+                "seconds",
+                "scene",
+                "speech"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Time Unit"
+        },
+        "asset": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Asset"
+        },
+        "layer": {
+          "anyOf": [
+            {
+              "enum": [
+                "background",
+                "images",
+                "diagrams",
+                "annotations",
+                "text",
+                "subtitles",
+                "effects"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Layer"
+        },
+        "z": {
+          "anyOf": [
+            {
+              "maximum": 100,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Z"
+        },
+        "text": {
+          "default": "",
+          "maxLength": 500,
+          "title": "Text",
+          "type": "string"
+        },
+        "value": {
+          "default": "",
+          "maxLength": 40,
+          "title": "Value",
+          "type": "string"
+        },
+        "position": {
+          "anyOf": [
+            {
+              "maxItems": 2,
+              "minItems": 2,
+              "prefixItems": [
+                {
+                  "maximum": 1,
+                  "minimum": 0,
+                  "type": "number"
+                },
+                {
+                  "maximum": 1,
+                  "minimum": 0,
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Position"
+        },
+        "size": {
+          "anyOf": [
+            {
+              "maxItems": 2,
+              "minItems": 2,
+              "prefixItems": [
+                {
+                  "maximum": 1,
+                  "minimum": 0,
+                  "type": "number"
+                },
+                {
+                  "maximum": 1,
+                  "minimum": 0,
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Size"
+        },
+        "to": {
+          "anyOf": [
+            {
+              "maxItems": 4,
+              "minItems": 4,
+              "prefixItems": [
+                {
+                  "maximum": 1,
+                  "minimum": 0,
+                  "type": "number"
+                },
+                {
+                  "maximum": 1,
+                  "minimum": 0,
+                  "type": "number"
+                },
+                {
+                  "maximum": 1,
+                  "minimum": 0,
+                  "type": "number"
+                },
+                {
+                  "maximum": 1,
+                  "minimum": 0,
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "To"
+        },
+        "from_rect": {
+          "anyOf": [
+            {
+              "maxItems": 4,
+              "minItems": 4,
+              "prefixItems": [
+                {
+                  "maximum": 1,
+                  "minimum": 0,
+                  "type": "number"
+                },
+                {
+                  "maximum": 1,
+                  "minimum": 0,
+                  "type": "number"
+                },
+                {
+                  "maximum": 1,
+                  "minimum": 0,
+                  "type": "number"
+                },
+                {
+                  "maximum": 1,
+                  "minimum": 0,
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "From Rect"
+        },
+        "points": {
+          "items": {
+            "maxItems": 2,
+            "minItems": 2,
+            "prefixItems": [
+              {
+                "maximum": 1,
+                "minimum": 0,
+                "type": "number"
+              },
+              {
+                "maximum": 1,
+                "minimum": 0,
+                "type": "number"
+              }
+            ],
+            "type": "array"
+          },
+          "maxItems": 32,
+          "title": "Points",
+          "type": "array"
+        },
+        "color": {
+          "anyOf": [
+            {
+              "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Color"
+        },
+        "style": {
+          "default": "body",
+          "enum": [
+            "headline",
+            "body",
+            "label",
+            "statistic"
+          ],
+          "title": "Style",
+          "type": "string"
+        },
+        "animation": {
+          "default": "none",
+          "enum": [
+            "none",
+            "fade",
+            "pop",
+            "slide_up",
+            "typewriter"
+          ],
+          "title": "Animation",
+          "type": "string"
+        },
+        "transition": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Transition"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "nodes": {
+          "items": {
+            "$ref": "#/$defs/DiagramNode"
+          },
+          "maxItems": 32,
+          "title": "Nodes",
+          "type": "array"
+        },
+        "edges": {
+          "items": {
+            "$ref": "#/$defs/DiagramEdge"
+          },
+          "maxItems": 64,
+          "title": "Edges",
+          "type": "array"
+        }
+      },
+      "required": [
+        "type",
+        "end"
+      ],
+      "title": "VisualEvent",
       "type": "object"
     }
   },

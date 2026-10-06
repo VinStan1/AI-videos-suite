@@ -146,6 +146,13 @@ main { margin-left: 256px; max-width: 1700px; padding: 0 44px 12px; }
 .scene-media .mini-row button { flex: 1; font-size: 10px; padding: 6px; }
 .scene-fields { display: grid; gap: 10px; min-width: 0; }
 .scene-fields textarea { font-size: 14px; }
+.composition-editor textarea { font: 12px/1.6 ui-monospace, monospace; }
+.named-assets { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
+.named-asset { display: flex; flex-direction: column; gap: 8px; padding: 12px; border: 1px solid var(--border); border-radius: 10px; min-width: 0; }
+.named-asset img { width: 100%; height: 150px; object-fit: cover; border-radius: 7px; }
+.named-asset strong { overflow-wrap: anywhere; color: var(--accent); }
+.scene-effects-head, .sound-cue { display: flex; gap: 10px; flex-wrap: wrap; align-items: end; margin: 10px 0; }
+.sound-cue label { flex: 1; min-width: 100px; }
 .scene-options { display: flex; gap: 16px; align-items: end; flex-wrap: wrap; }
 .scene-options label { flex: 1; min-width: 120px; }
 .scene-options input { max-width: none; }

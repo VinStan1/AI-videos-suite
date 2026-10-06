@@ -243,6 +243,7 @@ def test_cancellation(client,monkeypatch):
 
 def test_missing_services_have_no_silent_fallback(client):
     pid=client.post('/api/projects',json={'title':'No timing','story':'Una voce.'}).json()['id']
+    b=board(client,pid);b['settings'].update(voice_provider='espeak',voice='it');edit(client,pid,b)
     j=client.post(f'/api/projects/{pid}/jobs',json={'action':'split'}).json();assert wait(client,j['id'])['status']=='completed'
     j=client.post(f'/api/projects/{pid}/jobs',json={'action':'voice'}).json();assert wait(client,j['id'])['status']=='completed'
     j=client.post(f'/api/projects/{pid}/jobs',json={'action':'captions','caption_method':'timings'}).json();r=wait(client,j['id'])
@@ -280,6 +281,7 @@ def test_full_hd_with_background_music(client):
     import wave,math,struct
     pid=client.post('/api/projects',json={'title':'Full HD test'}).json()['id']
     b=board(client,pid);b['settings']['resolution']='1080x1920';b['settings']['fps']=30
+    b['settings'].update(voice_provider='espeak',voice='it')
     b['scenes']=[dict(id='s_aabbccdd',text='Una voce nel buio.',prompt='',motion='zoom_out',duration=None,
                       effects=[dict(effect='impact',at=0,volume=.22)])]
     edit(client,pid,b)

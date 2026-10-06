@@ -201,6 +201,8 @@ def ass_text(text: str, width: int = 29) -> str:
 
 def make_ass(cues: list[dict], settings: dict) -> str:
     size = settings["subtitle_size"]
+    from .themes import get_theme
+    font_name=get_theme(settings)["subtitle_font"]
     width = max(18, round(29*62/size))
     header = f"""[Script Info]
 ScriptType: v4.00+
@@ -211,7 +213,7 @@ ScaledBorderAndShadow: yes
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: Default,DejaVu Sans,{size},&H00FFFFFF,&H00FFFFFF,&H00111111,&H70000000,-1,0,0,0,100,100,0,0,1,4,1,2,100,180,{settings['subtitle_bottom']},1
+Style: Default,{font_name},{size},&H00FFFFFF,&H00FFFFFF,&H00111111,&H70000000,-1,0,0,0,100,100,0,0,1,4,1,2,100,180,{settings['subtitle_bottom']},1
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text

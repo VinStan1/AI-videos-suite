@@ -1,6 +1,44 @@
-# Guida per LLM Autore di Storie
+# Guida per LLM Autore di Video
 
-Questa guida descrive come produrre storie e storyboard compatibili con Cryptid Studio.
+Questa guida descrive come produrre storie e storyboard compatibili con AI Video Studio.
+
+Per video educational da 60–90 secondi usa il contratto aggiuntivo documentato
+in [COMPOSIZIONE_VIDEO.md](COMPOSIZIONE_VIDEO.md) e l'esempio
+`examples/internet-undersea-educational.json`. Il formato narrativo qui sotto
+rimane valido senza aggiungere alcun campo.
+
+## Contratto educational aggiuntivo
+
+- Imposta `settings.video_mode` a `educational`; senza il campo vale `narrative`.
+- Per ogni scena puoi aggiungere `assets: [{id, prompt}]`, `visual_events` e
+  una `transition` in ingresso. `prompt` continua a essere l'asset `default`.
+- Scrivi `text` per la voce e gli overlay in `visual_events`, mantenendoli separati.
+- Per uno storyboard completo compila i prompt di tutti gli asset e il profilo
+  comune `settings.voice_prompt`. Nel flusso Google con audio unico imposta
+  `settings.audio_mode: "full_generated"` e `settings.gemini_max_attempts: 1`.
+  `scenes[].voice_prompt` e' facoltativo e non e' richiesto per un JSON completo.
+  Usa `examples/gps-educational.json` come riferimento completo.
+- Pianifica i tempi sulla durata vera della scena: `start`/`end` sono locali.
+  Un nuovo shot non richiede una nuova immagine: usa reframe/zoom/pan/crop/focus.
+- Per voce generata con durata non prevedibile, usa `scenes[].time_unit: "scene"`
+  e start/end come frazioni 0–1. Un evento puo' usare `time_unit: "speech"`
+  per riferirsi alla parlata senza pausa finale, oppure `seconds` per tempi fissi.
+  Anche `transition` accetta `time_unit`: duration diventa una frazione.
+  Lascia `duration: null` su tutte le scene con audio unico e tagli automatici.
+- Usa coordinate normalizzate 0–1 e crop `[x,y,larghezza,altezza]` contenuti nel frame.
+- Eventi: show_image, reframe, zoom, pan, crop, focus, show_text, headline, label,
+  arrow, circle, highlight, line, statistic, diagram, background.
+- Transizioni: cut, crossfade, slide_left, slide_right, zoom_in, zoom_out,
+  zoom_through (con target), whip_left, whip_right, blur.
+- I numeri delle card devono avere una fonte verificata e una formulazione
+  corretta. Non inserire statistiche inventate o confondere il traffico
+  internazionale con tutto il traffico Internet.
+- Per 60–90 secondi pianifica copione e audio; `video_mode` non fissa la durata.
+- Non dichiarare `duration` su alcune scene soltanto se usi audio unico.
+- Non sovrapporre shot nello stesso livello/z o animazioni camera sullo stesso asset.
+- Le transizioni occupano l'inizio del nuovo shot e non riducono la durata audio.
+
+La guida per la persona che utilizza l'app e' [GUIDA_UTENTE.md](GUIDA_UTENTE.md).
 
 ## Obiettivo
 
@@ -43,8 +81,8 @@ commento prima o dopo il JSON.
 }
 ```
 
-Quando lo storyboard e' importato dall'interfaccia, `id` puo' essere omesso e
-l'app ne crea uno. Se gli ID sono presenti devono essere univoci e rispettare
+Quando lo storyboard e' importato dall'interfaccia o dall'API, `id` puo' essere
+omesso e l'app ne crea uno. Se gli ID sono presenti devono essere univoci e rispettare
 `^s_[a-f0-9]{8}$`. Per interoperabilita' usa `s_00000001`, `s_00000002` e cosi'
 via. Sono accettate al massimo 100 scene.
 
@@ -80,7 +118,7 @@ esempio:
 "voice": "Charon"
 ```
 
-Con Gemini puoi aggiungere `settings.voice_prompt`, una direzione comune a tutte
+Con Gemini puoi aggiungere `settings.voice_prompt`, un unico prompt comune a tutte
 le scene (massimo 2000 caratteri). Per una voce leggermente piu' profonda e stabile,
 usa per esempio:
 
@@ -92,12 +130,31 @@ Imposta `delivery: "natural"` in tutte le scene. Il prompt viene inviato al
 modello, senza aggiungere elaborazioni locali dell'altezza; il risultato dipende
 dalla voce e dal modello. Gli altri provider ignorano questo campo.
 
+Per la configurazione Google con un solo audio e una sola richiesta usa
+`audio_mode: "full_generated"`, `gemini_max_attempts: 1` e il solo prompt
+comune. Lascia vuoti o ometti i prompt vocali delle scene. Questo e' il flusso
+usato da `examples/gps-educational.json`; l'app unisce `scenes[].text` in una
+narrazione continua. Non inserire nel JSON una richiesta TTS per ogni scena.
+
+Puoi aggiungere anche `scenes[].voice_prompt` (massimo 2000 caratteri) per
+enfasi, ritmo, pronuncia e intenzione di quel passaggio. Esempio:
+
+```json
+"voice_prompt": "Tono curioso e divulgativo; enfatizza 'almeno quattro satelliti'. Leggi soltanto il testo della scena."
+```
+
+Gemini riceve il profilo comune e la direzione locale insieme; le istruzioni
+non vengono aggiunte al testo parlato o ai sottotitoli. Non inserire queste
+indicazioni in `text`. Gli altri provider non interpretano istruzioni libere.
+
 Per contenere al minimo le chiamate usa `"audio_mode": "full_generated"`.
 Cryptid Studio unisce il testo parlato delle scene con separazioni di paragrafo e
 genera l'intera narrazione con una richiesta TTS. In questa modalita' applica la
 regia `natural` e il prompt vocale comune; i valori `delivery` delle scene e
 `pause_seconds` non modificano l'audio. I marcatori `[[pausa=...]]` vengono
 rimossi dal testo completo, quindi usa punteggiatura e capoversi per il ritmo.
+I `voice_prompt` delle scene, se presenti, guidano i paragrafi corrispondenti
+nella stessa richiesta Gemini. Non richiedono una chiamata per scena.
 
 Imposta inoltre `settings.gemini_max_attempts: 1` per disabilitare il secondo
 tentativo automatico quando Gemini risponde `OTHER` senza audio. Con il valore

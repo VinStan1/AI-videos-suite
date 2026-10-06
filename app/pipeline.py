@@ -7,6 +7,7 @@ import uuid
 from pathlib import Path
 from . import captions, media, providers, store
 from .models import Scene, split_story
+from .composition import asset_definitions, asset_key, planned_assets
 
 
 def sid(): return "s_"+uuid.uuid4().hex[:8]
@@ -34,15 +35,20 @@ def split(p, request, ctx):
 def generate_prompts(p, request, ctx):
     items=selected(p,request.get("scene_id"))
     for i,s in enumerate(items):
-        current_image=p["assets"]["images"].get(s["id"])
-        if request.get("action")=="complete" and current_image and not current_image.get("stale"):
-            continue
-        if s["prompt"].strip() and not request.get("force"): continue
-        ctx.progress(f"Prompt visivo {i+1}/{len(items)}",int(i*90/len(items)))
-        s["prompt"]=providers.image_prompt(providers.spoken_text(s["text"]),p["story"],p["settings"]["visual_style"],p["settings"]["ollama_model"],ctx)
-        existing=p["assets"]["images"].get(s["id"])
-        if existing and existing["source"]!="manual": existing["stale"]=True
-        store.invalidate(p); store.save(p)
+        assets=asset_definitions(s) if request.get("asset_id") else planned_assets(s)
+        if request.get("asset_id"):
+            assets=[a for a in assets if a["id"]==request["asset_id"]]
+            if not assets: raise ValueError(f"Scena {s['id']}: asset '{request['asset_id']}' mancante")
+        for asset in assets:
+            current_image=p["assets"]["images"].get(asset_key(s["id"],asset["id"]))
+            if request.get("action")=="complete" and current_image and not current_image.get("stale"): continue
+            if asset["prompt"].strip() and not request.get("force"): continue
+            ctx.progress(f"Prompt scena {i+1}/{len(items)} / {asset['id']}",int(i*90/len(items)))
+            prompt=providers.image_prompt(providers.spoken_text(s["text"]),p["story"],p["settings"]["visual_style"],p["settings"]["ollama_model"],ctx)
+            if asset["id"]=="default": s["prompt"]=prompt
+            else: next(a for a in s["assets"] if a["id"]==asset["id"])["prompt"]=prompt
+            if current_image and current_image["source"]!="manual": current_image["stale"]=True
+            store.invalidate(p); store.save(p)
 
 
 def synthesize_voice(text, path, settings, ctx, delivery="natural"):
@@ -53,9 +59,12 @@ def synthesize_voice(text, path, settings, ctx, delivery="natural"):
         elif settings["voice_provider"]=="kokoro":
             words=providers.kokoro(text,source,settings["voice"],settings["speed"],ctx)
         elif settings["voice_provider"]=="gemini":
+            options=dict(voice_prompt=settings.get("voice_prompt",""),
+                         max_attempts=settings.get("gemini_max_attempts",2))
+            if settings.get("voice_directions"):
+                options["voice_directions"]=settings["voice_directions"]
             words=providers.google_gemini_tts(text,source,settings["voice"],settings["speed"],delivery,ctx,
-                                            voice_prompt=settings.get("voice_prompt",""),
-                                            max_attempts=settings.get("gemini_max_attempts",2))
+                                            **options)
         elif settings["voice_provider"]=="chirp":
             words=providers.google_chirp_tts(text,source,settings["voice"],settings["speed"],ctx)
         else:
@@ -102,12 +111,27 @@ def full_voice_text(scenes):
     return "\n\n".join(providers.spoken_text(s["text"]) for s in scenes)
 
 
+def directed_voice_settings(settings, scenes, full=False):
+    """Keep authored voice instructions separate from the spoken transcript."""
+    if settings["voice_provider"]!="gemini": return settings
+    directions=[]
+    for index,scene in enumerate(scenes,1):
+        prompt=scene.get("voice_prompt","").strip()
+        if prompt:
+            directions.append(f"Paragrafo {index} della narrazione: {prompt}" if full else prompt)
+    if not directions: return settings
+    return dict(settings,voice_directions="\n".join(directions))
+
+
 def full_voice_signature(scenes, settings):
-    return store.digest([
+    signature=store.digest([
         full_voice_text(scenes),settings["voice_provider"],settings["voice"],settings["speed"],
         settings.get("voice_prompt","").strip() if settings["voice_provider"]=="gemini" else "",
         "full-voice-v1",
     ])
+    if settings["voice_provider"]=="gemini" and any(s.get("voice_prompt","").strip() for s in scenes):
+        signature=store.digest([signature,[s.get("voice_prompt","").strip() for s in scenes],"scene-voice-directions-v1"])
+    return signature
 
 
 def aligned_full_timeline(scenes, words, total):
@@ -146,7 +170,7 @@ def generate_voice(p, request, ctx):
             return
         ctx.progress("Genero la narrazione completa in una sola richiesta TTS",10)
         path=root/"assets/audio"/("full_"+uuid.uuid4().hex[:8]+".wav")
-        words=synthesize_voice(text,path,settings,ctx,"natural")
+        words=synthesize_voice(text,path,directed_voice_settings(settings,scenes,full=True),ctx,"natural")
         p["assets"]["full_audio"]=store.asset(
             root,str(path.relative_to(root)),settings["voice_provider"],signature=signature,
             text_sha=store.digest(text),duration=media.wav_seconds(path),words=words,
@@ -163,12 +187,14 @@ def generate_voice(p, request, ctx):
         sig=store.digest([s["text"],settings["voice_provider"],settings["voice"],settings["speed"],delivery,"delivery-v1"])
         if settings["voice_provider"]=="gemini" and settings.get("voice_prompt","").strip():
             sig=store.digest([sig,settings["voice_prompt"].strip()])
+        if settings["voice_provider"]=="gemini" and s.get("voice_prompt","").strip():
+            sig=store.digest([sig,s["voice_prompt"].strip(),"scene-voice-directions-v1"])
         if existing and existing["source"]=="manual":
             if existing.get("stale"): raise ValueError("Audio manuale da riconfermare dopo la modifica del testo, scena "+s["id"])
             continue
         if existing and existing.get("signature")==sig and not existing.get("stale") and not request.get("force"): continue
         path=root/"assets/audio"/(s["id"]+"_"+uuid.uuid4().hex[:8]+".wav")
-        words=synthesize_voice_with_pauses(s["text"],path,settings,ctx,delivery)
+        words=synthesize_voice_with_pauses(s["text"],path,directed_voice_settings(settings,[s]),ctx,delivery)
         p["assets"]["audio"][s["id"]]=store.asset(root,str(path.relative_to(root)),settings["voice_provider"],
                  signature=sig,text_sha=store.digest(s["text"]),duration=media.wav_seconds(path),words=words,stale=False,delivery=delivery)
         store.invalidate(p,audio=True); store.save(p)
@@ -186,23 +212,24 @@ def generate_music(p, request, ctx):
 def generate_images(p, request, ctx):
     root=store.project_dir(p["id"]); items=selected(p,request.get("scene_id"))
     for i,s in enumerate(items):
-        ctx.progress(f"Immagine scena {i+1}/{len(items)}",int(i*90/len(items)))
-        existing=p["assets"]["images"].get(s["id"])
-        if existing and existing["source"]=="manual": continue
-        if existing and not existing.get("stale") and not request.get("force"): continue
-        prompt=s["prompt"].strip()
-        if not prompt: raise ValueError("Scrivi o genera il prompt visivo della scena "+s["id"])
-        path=root/"assets/images"/(s["id"]+"_"+uuid.uuid4().hex[:8]+".png")
-        seed=int(uuid.uuid4().hex[:8],16)
-        provider=p["settings"]["image_provider"]
-        if provider=="cloudflare":
-            providers.cloudflare_image(prompt,p["settings"]["visual_style"],path,seed,ctx)
-        elif provider=="huggingface":
-            providers.huggingface_image(prompt,p["settings"]["visual_style"],path,seed,ctx)
-        else:
-            providers.comfy_image(prompt,p["settings"]["visual_style"],path,seed,ctx)
-        p["assets"]["images"][s["id"]]=store.asset(root,str(path.relative_to(root)),provider,seed=seed,stale=False)
-        store.invalidate(p); store.save(p)
+        assets=asset_definitions(s) if request.get("asset_id") else planned_assets(s)
+        if request.get("asset_id"):
+            assets=[a for a in assets if a["id"]==request["asset_id"]]
+            if not assets: raise ValueError(f"Scena {s['id']}: asset '{request['asset_id']}' mancante")
+        for asset in assets:
+            key=asset_key(s["id"],asset["id"])
+            ctx.progress(f"Immagine scena {i+1}/{len(items)} / {asset['id']}",int(i*90/len(items)))
+            existing=p["assets"]["images"].get(key)
+            if existing and existing["source"]=="manual": continue
+            if existing and not existing.get("stale") and not request.get("force"): continue
+            prompt=asset["prompt"].strip()
+            if not prompt: raise ValueError(f"Scrivi o genera il prompt visivo della scena {s['id']}, asset '{asset['id']}'")
+            path=root/"assets/images"/(key+"_"+uuid.uuid4().hex[:8]+".png")
+            seed=int(uuid.uuid4().hex[:8],16); provider=p["settings"]["image_provider"]
+            generator={"cloudflare":providers.cloudflare_image,"huggingface":providers.huggingface_image,"comfyui":providers.comfy_image}[provider]
+            generator(prompt,p["settings"]["visual_style"],path,seed,ctx)
+            p["assets"]["images"][key]=store.asset(root,str(path.relative_to(root)),provider,seed=seed,stale=False)
+            store.invalidate(p); store.save(p)
 
 
 def assemble_audio(p, ctx):
@@ -324,8 +351,6 @@ def render(p, request, ctx):
         (root/"output"/"sottotitoli.ass").write_text(ass,"utf-8")
         (root/"output"/"sottotitoli.srt").write_text(captions.to_srt(cues),"utf-8")
     ctx.progress("Controlli prima del montaggio",5)
-    for i,s in enumerate(p["scenes"],1):
-        if s["id"] not in p["assets"]["images"]: raise ValueError(f"Manca l'immagine della scena {i}. Caricala o generala.")
     preview=request.get("preview",False)
     path,info=media.render_movie(root,p,narration,ass,preview,ctx)
     p["preview" if preview else "output"]=store.asset(root,str(path.relative_to(root)),"render",stale=False,**info)

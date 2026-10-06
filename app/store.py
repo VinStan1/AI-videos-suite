@@ -108,6 +108,7 @@ def load(pid: str) -> dict:
         project["settings"].setdefault("music_preset","mist")
         project["settings"].setdefault("voice_prompt","")
         project["settings"].setdefault("gemini_max_attempts",2)
+        project["settings"].setdefault("video_mode","narrative")
         # Keep older storyboards compatible with per-scene direction and effects.
         for scene in project.setdefault("scenes",[]):
             scene.setdefault("delivery","natural")

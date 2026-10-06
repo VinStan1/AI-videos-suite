@@ -15,11 +15,44 @@ modelli locali per utilizzare il montaggio.
 
 Inizia da **[AVVIO_RAPIDO.md](AVVIO_RAPIDO.md)**.
 
+La guida completa per chi usa l'app e' **[GUIDA_UTENTE.md](docs/GUIDA_UTENTE.md)**,
+disponibile anche dal collegamento **Guida utilizzatore** nella barra laterale.
+
+## Video educational e composizione
+
+Oltre al flusso narrativo originale, puoi selezionare **Educational** e creare
+short da 60–90 secondi con asset multipli, shot temporizzati, reframing, titoli
+cinetici, etichette, frecce, evidenziazioni, card numeriche e diagrammi semplici.
+Una singola immagine puo' essere riutilizzata in piu' inquadrature.
+
+I vecchi storyboard continuano a usare il renderer FFmpeg originale. I nuovi
+campi `assets`, `visual_events`, `transition` e `settings.video_mode` sono
+facoltativi. Voce, SRT, musica, effetti audio, import/export e cache restano
+nello stesso flusso. Il preset non impone automaticamente una durata al video.
+
+Formato e coordinate: **[COMPOSIZIONE_VIDEO.md](docs/COMPOSIZIONE_VIDEO.md)**.
+Demo: **[internet-undersea-educational.json](examples/internet-undersea-educational.json)**.
+Tema centralizzato: `app/themes.py`.
+
+```powershell
+# Dopo un aggiornamento del codice
+powershell -ExecutionPolicy Bypass -File .\scripts\start.ps1 -Rebuild
+# Crea un nuovo progetto demo offline di 72 secondi, anteprima 540p
+docker exec cryptid-studio python scripts/render_educational_demo.py
+# Oppure, esportazione finale 720x1280
+docker exec cryptid-studio python scripts/render_educational_demo.py --final
+```
+
+La demo usa illustrazioni schematiche locali e voce eSpeak di prova, senza API
+o modelli AI. Il suo dato sui cavi riguarda i flussi internazionali: fonte
+[ITU, Submarine Cable Resilience](https://www.itu.int/digital-resilience/submarine-cables/).
+
 ## Che cosa contiene
 
 - Interfaccia web, API FastAPI, salvataggio dei progetti su disco.
 - Divisione fedele del racconto in scene, senza LLM e senza riscrittura.
 - Editor dello storyboard, riordino delle scene, import/export JSON.
+- Composizione con eventi temporizzati, livelli, asset multipli e transizioni.
 - Upload di immagini, audio completo o per scena, SRT e sottofondo.
 - Sottofondi e otto effetti sonori procedurali locali, mixati durante il render.
 - Sintesi eSpeak di prova inclusa; Hugging Face Inference e Kokoro CPU opzionali.
@@ -126,6 +159,20 @@ modifichi uno storyboard esportato, conserva gli ID.
 
 Per affidare la scrittura a un altro modello usa [docs/GUIDA_LLM_STORIE.md](docs/GUIDA_LLM_STORIE.md): definisce il JSON, i prompt visivi,
 le pause vocali, i sottofondi e gli effetti sonori supportati.
+
+Per descrivere la produzione completa in uno storyboard, vedi
+[l'esempio GPS](examples/gps-educational.json): prompt per ogni asset, un unico
+`settings.voice_prompt` per tutta la narrazione, inquadrature, overlay,
+transizioni, musica, sottotitoli e formato. Usa `audio_mode: "full_generated"`
+e `gemini_max_attempts: 1` per una sola richiesta Google senza ritentativi
+automatici. I prompt vocali delle scene restano facoltativi. La
+[guida utente](docs/GUIDA_UTENTE.md#descrivere-il-video-intero-con-un-json) spiega
+come importare e generare i contenuti.
+
+La regia puo' usare `time_unit: "scene"` o `"speech"` per start/end e durate
+delle transizioni proporzionali all'audio reale. Il GPS usa frazioni 0–1 e durate
+manuali vuote, cosi' un audio piu' corto non lascia eventi oltre la scena.
+Senza il campo, i vecchi tempi in secondi mantengono il loro comportamento.
 
 Ripetere la divisione crea nuove scene e scollega i contenuti delle precedenti.
 I file non vengono eliminati e una copia del manifesto e' salvata in `history/`.
@@ -512,6 +559,7 @@ data/
       sottotitoli.srt
       sottotitoli.ass
       timeline.json
+      composition.json          # scene, asset, eventi e livelli normalizzati
       word_timestamps.json      # soltanto quando disponibili
       report.json
 ```

@@ -18,6 +18,7 @@ from starlette.middleware.trustedhost import TrustedHostMiddleware
 from . import __version__, captions, media, pipeline, providers, store
 from .jobs import JOBS
 from .models import CaptionText, JobRequest, ProjectCreate, Scene, Storyboard
+from .composition import asset_definitions, asset_key
 
 STATIC=Path(__file__).parent/"static"
 MAX_UPLOAD=int(os.getenv("MAX_UPLOAD_MB","250"))*1024*1024
@@ -67,6 +68,11 @@ async def not_found(request,exc): return JSONResponse({"detail":"Progetto o file
 def index(): return FileResponse(STATIC/"index.html")
 
 
+@app.get("/guide")
+def user_guide():
+    return FileResponse(Path(__file__).parent.parent/"docs/GUIDA_UTENTE.md",media_type="text/plain; charset=utf-8")
+
+
 @app.get("/api/health")
 def health(): return {"status":"ok","version":__version__,"mode":"local","ffmpeg":bool(shutil.which("ffmpeg"))}
 
@@ -110,6 +116,11 @@ def edit(pid:str,body:Storyboard):
             [(s["id"],s["text"]) for s in p["scenes"]] !=
             [(s["id"],s["text"]) for s in new["scenes"]]
         )
+        scene_voice_prompts_changed=(
+            new["settings"]["voice_provider"]=="gemini" and
+            [(s["id"],s.get("voice_prompt","").strip()) for s in p["scenes"]] !=
+            [(s["id"],s.get("voice_prompt","").strip()) for s in new["scenes"]]
+        )
         audio_changed=(old_settings["pause_seconds"]!=new["settings"]["pause_seconds"] or
                        old_settings["audio_mode"]!=new["settings"]["audio_mode"] or
                        [(s["id"],s["text"],s["duration"]) for s in p["scenes"]] !=
@@ -120,16 +131,25 @@ def edit(pid:str,body:Storyboard):
             image=p["assets"]["images"].get(s["id"])
             changed=previous and previous["text"]!=s["text"]
             delivery_changed=previous and previous.get("delivery","natural")!=s.get("delivery","natural")
-            if audio and (changed or ((new_voice or delivery_changed) and audio["source"]!="manual")):
+            voice_prompt_changed=(previous and new["settings"]["voice_provider"]=="gemini" and
+                                  previous.get("voice_prompt","").strip()!=s.get("voice_prompt","").strip())
+            if audio and (changed or ((new_voice or delivery_changed or voice_prompt_changed) and audio["source"]!="manual")):
                 audio["stale"]=True; audio_changed=True
             if image and image["source"]!="manual" and (changed or
                 (previous and previous["prompt"]!=s["prompt"]) or old_settings["visual_style"]!=new["settings"]["visual_style"]):
                 image["stale"]=True
+            old_assets={a["id"]:a for a in (previous or {}).get("assets",[])}
+            for definition in s.get("assets",[]):
+                named=p["assets"]["images"].get(asset_key(s["id"],definition["id"]))
+                if named and named["source"]!="manual" and (changed or old_assets.get(definition["id"])!=definition or
+                    old_settings["visual_style"]!=new["settings"]["visual_style"]):
+                    named["stale"]=True
         full_audio=p["assets"].get("full_audio")
-        if full_audio and full_audio.get("source")!="manual" and (new_voice or scene_texts_changed):
+        if full_audio and full_audio.get("source")!="manual" and (new_voice or scene_texts_changed or scene_voice_prompts_changed):
             full_audio["stale"]=True; audio_changed=True
         ids={s["id"] for s in new["scenes"]}
-        p["assets"]["images"]={k:v for k,v in p["assets"]["images"].items() if k in ids}
+        image_keys={asset_key(s["id"],a["id"]) for s in new["scenes"] for a in asset_definitions(s)}
+        p["assets"]["images"]={k:v for k,v in p["assets"]["images"].items() if k in image_keys}
         p["assets"]["audio"]={k:v for k,v in p["assets"]["audio"].items() if k in ids}
         music=p["assets"].get("music")
         if music_profile_changed and music and music.get("source")=="generated": music["stale"]=True
@@ -178,6 +198,13 @@ def upload_music_library(file:UploadFile=File(...)):
         raw.unlink(missing_ok=True)
 
 
+def image_target(scene:dict|None,asset_id:str) -> str:
+    if not scene: raise ValueError("Seleziona una scena valida.")
+    if asset_id not in {a["id"] for a in asset_definitions(scene)}:
+        raise ValueError(f"Scena {scene['id']}: asset '{asset_id}' mancante nello storyboard")
+    return asset_key(scene["id"],asset_id)
+
+
 @app.delete("/api/music-library/{track_id}")
 def remove_music_library(track_id:str):
     store.delete_music_track(track_id); return {"deleted":track_id}
@@ -214,11 +241,12 @@ def save_caption_text(p:dict,text:str):
 
 @app.post("/api/projects/{pid}/upload")
 def upload(pid:str,kind:Literal["image","scene_audio","full_audio","music","subtitles"]=Query(...),
-           scene_id:str|None=None,file:UploadFile=File(...)):
+           scene_id:str|None=None,asset_id:str="default",file:UploadFile=File(...)):
     with JOBS.lock:
         JOBS.assert_idle(pid); p=store.load(pid); root=store.project_dir(pid)
         scene=next((s for s in p["scenes"] if s["id"]==scene_id),None)
         if kind in ("image","scene_audio") and not scene: raise ValueError("Seleziona una scena valida.")
+        image_id=image_target(scene,asset_id) if kind=="image" else None
         raw=upload_to_temp(file,root)
         try:
             if kind=="subtitles":
@@ -231,7 +259,7 @@ def upload(pid:str,kind:Literal["image","scene_audio","full_audio","music","subt
                     info=media.normalize_image(raw,path)
                 except (OSError, SyntaxError) as exc:
                     raise ValueError("Immagine non leggibile. Usa un PNG, JPEG o WebP valido.") from exc
-                p["assets"]["images"][scene_id]=store.asset(root,str(path.relative_to(root)),"manual",stale=False,**info)
+                p["assets"]["images"][image_id]=store.asset(root,str(path.relative_to(root)),"manual",stale=False,**info)
                 store.invalidate(p)
             else:
                 if raw.suffix.lower() not in AUDIO_EXTENSIONS:
@@ -264,7 +292,7 @@ def set_captions(pid:str,body:CaptionText):
 
 
 @app.post("/api/projects/{pid}/assets/confirm")
-def confirm_asset(pid:str,kind:Literal["image","scene_audio","subtitles"],scene_id:str|None=None):
+def confirm_asset(pid:str,kind:Literal["image","scene_audio","subtitles"],scene_id:str|None=None,asset_id:str="default"):
     with JOBS.lock:
         JOBS.assert_idle(pid); p=store.load(pid)
         if kind=="subtitles":
@@ -274,18 +302,20 @@ def confirm_asset(pid:str,kind:Literal["image","scene_audio","subtitles"],scene_
             sub.update(stale=False,accept_next_audio=True)
             store.invalidate(p); return store.save(p)
         key="images" if kind=="image" else "audio"
-        a=p["assets"][key].get(scene_id)
+        target=image_target(next((s for s in p["scenes"] if s["id"]==scene_id),None),asset_id) if kind=="image" else scene_id
+        a=p["assets"][key].get(target)
         if not a: raise ValueError("Contenuto non trovato.")
         a.update(stale=False,source="manual")
         store.invalidate(p,audio=kind=="scene_audio"); return store.save(p)
 
 
 @app.delete("/api/projects/{pid}/assets")
-def delete_asset(pid:str,kind:Literal["image","scene_audio","full_audio","music","subtitles"],scene_id:str|None=None):
+def delete_asset(pid:str,kind:Literal["image","scene_audio","full_audio","music","subtitles"],scene_id:str|None=None,asset_id:str="default"):
     with JOBS.lock:
         JOBS.assert_idle(pid); p=store.load(pid)
         if kind in ("image","scene_audio"):
-            p["assets"]["images" if kind=="image" else "audio"].pop(scene_id,None)
+            target=image_target(next((s for s in p["scenes"] if s["id"]==scene_id),None),asset_id) if kind=="image" else scene_id
+            p["assets"]["images" if kind=="image" else "audio"].pop(target,None)
         elif kind=="subtitles": p["subtitles"]=None
         else: p["assets"][kind]=None
         store.invalidate(p,audio=kind in ("scene_audio","full_audio")); return store.save(p)
@@ -328,6 +358,8 @@ def prompts(pid:str):
     for i,s in enumerate(p["scenes"],1):
         lines += [f"SCENA {i:02d} | file {i:02d}.png",f"Narrazione: {s['text']}",
                   "Prompt: "+(s["prompt"] or "Crea un'illustrazione rappresentativa della scena narrata, coerente con lo stile sopra."),""]
+        for asset in s.get("assets",[]):
+            lines += [f"ASSET {asset['id']} | file {i:02d}_{asset['id']}.png", "Prompt: "+asset["prompt"],""]
     return "\n".join(lines)
 
 
@@ -356,6 +388,7 @@ def demo():
     p=store.create("Il lago dopo il tramonto - DEMO", " ".join(texts)); root=store.project_dir(p["id"])
     p["scenes"]=[Scene(id=pipeline.sid(),text=t,prompt="Immagine segnaposto tecnica: sostituiscila con una tua illustrazione.").model_dump() for t in texts]
     p["settings"]["resolution"]="540x960"; p["settings"]["fps"]=24
+    p["settings"]["voice_provider"]="espeak"; p["settings"]["voice"]="it"
     for i,s in enumerate(p["scenes"],1):
         path=root/"assets/images"/(s["id"]+".png"); media.demo_card(path,i)
         p["assets"]["images"][s["id"]]=store.asset(root,str(path.relative_to(root)),"demo",stale=False)

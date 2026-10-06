@@ -10,8 +10,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY app ./app
 COPY workflows ./workflows
 COPY examples ./examples
+COPY docs ./docs
 COPY tests ./tests
 COPY scripts/smoke_test.py ./scripts/smoke_test.py
+COPY scripts/render_educational_demo.py ./scripts/render_educational_demo.py
 RUN useradd -m -u 1000 studio && mkdir -p /data && chown studio:studio /data
 USER studio
 EXPOSE 8000

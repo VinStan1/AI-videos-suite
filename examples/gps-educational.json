@@ -1,0 +1,973 @@
+{
+  "title": "Come funziona davvero il GPS?",
+  "story": "Il tuo telefono non sa direttamente dove ti trovi. Per scoprirlo ascolta segnali provenienti da satelliti che orbitano a migliaia di chilometri dalla Terra. Ogni satellite trasmette continuamente la propria posizione e un tempo estremamente preciso. Il telefono misura quanto tempo impiega il segnale ad arrivare. Siccome le onde radio viaggiano alla velocità della luce, da quel ritardo può stimare la distanza dal satellite. Ma conoscere la distanza da un solo satellite non basta: potresti trovarti in qualunque punto di una grande superficie. Con due satelliti le possibilità diminuiscono. Con tre si restringono ancora. In pratica, per ottenere una posizione precisa il ricevitore usa normalmente almeno quattro satelliti. Il quarto serve anche a correggere l'orologio del telefono, che non è preciso come gli orologi atomici dei satelliti. Ed è qui che la storia diventa ancora più strana: gli orologi sui satelliti scorrono a una velocità leggermente diversa rispetto a quelli sulla Terra, a causa della relatività di Einstein. Senza correggere questo effetto, l'errore di posizione crescerebbe rapidamente. Quindi quando apri una mappa e vedi il puntino blu, stai usando satelliti, orologi atomici, onde radio e persino la relatività.",
+  "scenes": [
+    {
+      "id": "s_00000001",
+      "text": "Il tuo telefono non sa direttamente dove ti trovi. Per scoprirlo deve ascoltare dei segnali che arrivano dallo spazio.",
+      "duration": null,
+      "motion": "zoom_in",
+      "assets": [
+        {
+          "id": "phone_gps",
+          "prompt": "Establishing shot: a modern smartphone seen in a slightly elevated three-quarter view, occupying the lower middle of the frame; its blank-label screen displays a simplified dark city street map and one small cyan location dot. Above the phone, a schematic curved Earth horizon and a single clearly recognizable GPS navigation satellite near normalized position (0.28, 0.22); a few more navigation satellites are small secondary silhouettes, never crowds of star-like objects. Suggest the invisible radio broadcast with faint translucent wave arcs, not solid laser beams; leave the diagonal path from the upper-left satellite to the receiver clear for a composited arrow. Center the phone near (0.50, 0.70), preserve enough background for a later crop [0.18, 0.05, 0.64, 0.64], and keep all map streets free of labels. This is a conceptual explanatory illustration, not a literal photograph from space."
+        }
+      ],
+      "visual_events": [
+        {
+          "type": "show_image",
+          "asset": "phone_gps",
+          "start": 0.0,
+          "end": 1.0,
+          "position": [
+            0.5,
+            0.5
+          ],
+          "size": [
+            1,
+            1
+          ],
+          "layer": "images",
+          "z": 10,
+          "transition": {
+            "type": "cut",
+            "duration": 0.0,
+            "target": [
+              0.5,
+              0.5
+            ],
+            "time_unit": "scene"
+          }
+        },
+        {
+          "type": "zoom",
+          "asset": "phone_gps",
+          "start": 0.0,
+          "end": 0.311111111,
+          "from_rect": [
+            0,
+            0,
+            1,
+            1
+          ],
+          "to": [
+            0.07,
+            0.07,
+            0.86,
+            0.86
+          ]
+        },
+        {
+          "type": "headline",
+          "text": "IL TELEFONO NON SA DOVE SEI",
+          "start": 0.033333333,
+          "end": 0.355555556,
+          "animation": "pop",
+          "position": [
+            0.5,
+            0.18
+          ],
+          "style": "headline",
+          "color": "#F4F6FC",
+          "layer": "text",
+          "z": 40,
+          "time_unit": "speech"
+        },
+        {
+          "type": "reframe",
+          "start": 0.333333333,
+          "end": 0.666666667,
+          "to": [
+            0.18,
+            0.05,
+            0.64,
+            0.64
+          ],
+          "asset": "phone_gps"
+        },
+        {
+          "type": "arrow",
+          "start": 0.555555556,
+          "end": 0.944444444,
+          "points": [
+            [
+              0.28,
+              0.22
+            ],
+            [
+              0.5,
+              0.7
+            ]
+          ],
+          "color": "#7DE0DE",
+          "layer": "annotations",
+          "z": 30,
+          "time_unit": "speech"
+        }
+      ],
+      "transition": {
+        "type": "cut",
+        "duration": 0.0,
+        "target": [
+          0.5,
+          0.5
+        ],
+        "time_unit": "scene"
+      },
+      "delivery": "natural",
+      "effects": [],
+      "time_unit": "scene"
+    },
+    {
+      "id": "s_00000002",
+      "text": "Ogni satellite trasmette continuamente due informazioni fondamentali: dove si trova e che ora è, con una precisione estrema.",
+      "duration": null,
+      "motion": "pan_left",
+      "assets": [
+        {
+          "id": "satellite",
+          "prompt": "Medium close-up of one credible GPS navigation satellite in orbit above the curved Earth, with rectangular dark solar panels and a compact metallic bus. Place its body near normalized (0.54, 0.35) so the short leftward pan leaves it close to (0.52, 0.32) for the circle annotation. Show subtle semi-transparent radio-wave arcs radiating toward Earth, not a receiving satellite network or an Internet dish. Earth curvature lies in the lower third, the main satellite remains fully inside the frame with generous lateral room for a gentle pan. Reserve dark low-detail space around y=0.55 and y=0.65 for the two separate labels POSIZIONE and TEMPO PRECISISSIMO, which must not appear in the generated image."
+        }
+      ],
+      "visual_events": [
+        {
+          "type": "show_image",
+          "asset": "satellite",
+          "start": 0.0,
+          "end": 1.0,
+          "position": [
+            0.5,
+            0.5
+          ],
+          "size": [
+            1,
+            1
+          ],
+          "layer": "images",
+          "z": 10,
+          "transition": {
+            "type": "cut",
+            "duration": 0.0,
+            "target": [
+              0.5,
+              0.5
+            ],
+            "time_unit": "scene"
+          }
+        },
+        {
+          "type": "pan",
+          "asset": "satellite",
+          "start": 0.0,
+          "end": 0.2,
+          "from_rect": [
+            0.1,
+            0.06,
+            0.88,
+            0.88
+          ],
+          "to": [
+            0.02,
+            0.06,
+            0.88,
+            0.88
+          ]
+        },
+        {
+          "type": "label",
+          "text": "POSIZIONE",
+          "start": 0.2,
+          "end": 0.6,
+          "animation": "slide_up",
+          "position": [
+            0.5,
+            0.55
+          ],
+          "style": "label",
+          "color": "#F4F6FC",
+          "layer": "text",
+          "z": 40,
+          "time_unit": "speech"
+        },
+        {
+          "type": "label",
+          "text": "TEMPO PRECISISSIMO",
+          "start": 0.4,
+          "end": 0.9,
+          "animation": "slide_up",
+          "position": [
+            0.5,
+            0.65
+          ],
+          "style": "label",
+          "color": "#F4F6FC",
+          "layer": "text",
+          "z": 40,
+          "time_unit": "speech"
+        },
+        {
+          "type": "circle",
+          "start": 0.5,
+          "end": 0.9,
+          "position": [
+            0.52,
+            0.32
+          ],
+          "size": [
+            0.28,
+            0.28
+          ],
+          "color": "#7DE0DE",
+          "layer": "annotations",
+          "z": 30,
+          "time_unit": "speech"
+        }
+      ],
+      "transition": {
+        "type": "whip_left",
+        "duration": 0.03,
+        "target": [
+          0.5,
+          0.5
+        ],
+        "time_unit": "scene"
+      },
+      "delivery": "natural",
+      "effects": [],
+      "time_unit": "scene"
+    },
+    {
+      "id": "s_00000003",
+      "text": "Il telefono misura quanto tempo impiega il segnale ad arrivare. Moltiplicando quel tempo per la velocità della luce può stimare la distanza dal satellite.",
+      "duration": null,
+      "motion": "zoom_out",
+      "assets": [
+        {
+          "id": "signal_distance",
+          "prompt": "Clean conceptual distance-measurement illustration: one GPS satellite centered at (0.50, 0.25) and one smartphone receiver centered at (0.50, 0.76). Leave a clear vertical corridor between them for the renderer to draw a straight connection line. Represent radio propagation only with very faint concentric wavefronts and sufficient negative space, avoiding hard-coded arrows, rulers, equations or speed numbers. Use depth and lighting to distinguish the spacecraft from the phone, with both objects safely visible within a central 80-percent crop that will slowly expand to the full image. Keep the center around y=0.48 visually simple so a velocity statistic card can overlay the image."
+        }
+      ],
+      "visual_events": [
+        {
+          "type": "show_image",
+          "asset": "signal_distance",
+          "start": 0.0,
+          "end": 1.0,
+          "position": [
+            0.5,
+            0.5
+          ],
+          "size": [
+            1,
+            1
+          ],
+          "layer": "images",
+          "z": 10,
+          "transition": {
+            "type": "cut",
+            "duration": 0.0,
+            "target": [
+              0.5,
+              0.5
+            ],
+            "time_unit": "scene"
+          }
+        },
+        {
+          "type": "zoom",
+          "asset": "signal_distance",
+          "start": 0.0,
+          "end": 0.954545455,
+          "from_rect": [
+            0.1,
+            0.1,
+            0.8,
+            0.8
+          ],
+          "to": [
+            0,
+            0,
+            1,
+            1
+          ]
+        },
+        {
+          "type": "headline",
+          "text": "TEMPO → DISTANZA",
+          "start": 0.090909091,
+          "end": 0.363636364,
+          "animation": "pop",
+          "position": [
+            0.5,
+            0.18
+          ],
+          "style": "headline",
+          "color": "#F4F6FC",
+          "layer": "text",
+          "z": 40,
+          "time_unit": "speech"
+        },
+        {
+          "type": "line",
+          "start": 0.181818182,
+          "end": 0.818181818,
+          "points": [
+            [
+              0.5,
+              0.25
+            ],
+            [
+              0.5,
+              0.76
+            ]
+          ],
+          "color": "#7DE0DE",
+          "layer": "annotations",
+          "z": 30,
+          "time_unit": "speech"
+        },
+        {
+          "type": "statistic",
+          "text": "VELOCITÀ DELLA LUCE",
+          "start": 0.454545455,
+          "end": 0.863636364,
+          "animation": "pop",
+          "value": "≈ 300.000 km/s",
+          "position": [
+            0.5,
+            0.42
+          ],
+          "size": [
+            0.84,
+            0.22
+          ],
+          "style": "statistic",
+          "color": "#7DE0DE",
+          "layer": "text",
+          "z": 40,
+          "time_unit": "speech"
+        }
+      ],
+      "transition": {
+        "type": "slide_left",
+        "duration": 0.027272727,
+        "target": [
+          0.5,
+          0.5
+        ],
+        "time_unit": "scene"
+      },
+      "delivery": "natural",
+      "effects": [],
+      "time_unit": "scene"
+    },
+    {
+      "id": "s_00000004",
+      "text": "Ma un solo satellite non basta. Sapere di essere a una certa distanza significa soltanto sapere di trovarsi da qualche parte su un'enorme superficie.",
+      "duration": null,
+      "motion": "zoom_in",
+      "assets": [
+        {
+          "id": "one_satellite",
+          "prompt": "Explain why a single distance measurement does not locate a receiver: one small navigation satellite above a schematic Earth globe, with one broad translucent distance shell centered on the satellite rather than on Earth. Show the shell intersecting the Earth surface in a wide possible-location region, no unique precise receiver point and no claim that every point on Earth is a solution. Use clean cyan translucent geometry on navy, keep the intersection and shell readable around normalized (0.50, 0.52) inside the region x=0.18 to 0.82, y=0.20 to 0.84, which will receive a semi-transparent highlight. All scale relationships are schematic; avoid extra spheres, text and visual clutter."
+        }
+      ],
+      "visual_events": [
+        {
+          "type": "show_image",
+          "asset": "one_satellite",
+          "start": 0.0,
+          "end": 1.0,
+          "position": [
+            0.5,
+            0.5
+          ],
+          "size": [
+            1,
+            1
+          ],
+          "layer": "images",
+          "z": 10,
+          "transition": {
+            "type": "cut",
+            "duration": 0.0,
+            "target": [
+              0.5,
+              0.5
+            ],
+            "time_unit": "scene"
+          }
+        },
+        {
+          "type": "zoom",
+          "asset": "one_satellite",
+          "start": 0.0,
+          "end": 0.977777778,
+          "from_rect": [
+            0,
+            0,
+            1,
+            1
+          ],
+          "to": [
+            0.07,
+            0.07,
+            0.86,
+            0.86
+          ]
+        },
+        {
+          "type": "headline",
+          "text": "1 SATELLITE NON BASTA",
+          "start": 0.055555556,
+          "end": 0.388888889,
+          "animation": "pop",
+          "position": [
+            0.5,
+            0.18
+          ],
+          "style": "headline",
+          "color": "#F4F6FC",
+          "layer": "text",
+          "z": 40,
+          "time_unit": "speech"
+        },
+        {
+          "type": "highlight",
+          "start": 0.333333333,
+          "end": 0.888888889,
+          "position": [
+            0.5,
+            0.52
+          ],
+          "size": [
+            0.64,
+            0.64
+          ],
+          "color": "#7DE0DE",
+          "layer": "annotations",
+          "z": 30,
+          "time_unit": "speech"
+        }
+      ],
+      "transition": {
+        "type": "crossfade",
+        "duration": 0.033333333,
+        "target": [
+          0.5,
+          0.5
+        ],
+        "time_unit": "scene"
+      },
+      "delivery": "natural",
+      "effects": [],
+      "time_unit": "scene"
+    },
+    {
+      "id": "s_00000005",
+      "text": "Aggiungendo altri satelliti, queste possibili posizioni si restringono sempre di più. In pratica il ricevitore usa normalmente almeno quattro satelliti.",
+      "duration": null,
+      "motion": "zoom_in",
+      "assets": [
+        {
+          "id": "four_satellites",
+          "prompt": "Background plate for a GPS four-satellite explanatory overlay: a subtle curved Earth surface with a single smartphone receiver near normalized (0.50, 0.72). Place four small physically recognizable GPS satellites around (0.20, 0.20), (0.80, 0.20), (0.18, 0.58), (0.82, 0.58), leaving clear space around these positions for composited node labels and connections. The four measurements converge conceptually on the same receiver; do not draw signal paths, triangulation lines, node boxes, labels or the number four in the generated image. Preserve enough negative space around the middle for a number card after the diagram. This is an explanatory schematic, not an accurate orbital scale model."
+        }
+      ],
+      "visual_events": [
+        {
+          "type": "show_image",
+          "asset": "four_satellites",
+          "start": 0.0,
+          "end": 1.0,
+          "position": [
+            0.5,
+            0.5
+          ],
+          "size": [
+            1,
+            1
+          ],
+          "layer": "images",
+          "z": 10,
+          "transition": {
+            "type": "cut",
+            "duration": 0.0,
+            "target": [
+              0.5,
+              0.5
+            ],
+            "time_unit": "scene"
+          }
+        },
+        {
+          "type": "zoom",
+          "asset": "four_satellites",
+          "start": 0.0,
+          "end": 0.981818182,
+          "from_rect": [
+            0,
+            0,
+            1,
+            1
+          ],
+          "to": [
+            0.07,
+            0.07,
+            0.86,
+            0.86
+          ]
+        },
+        {
+          "type": "diagram",
+          "start": 0.090909091,
+          "end": 0.727272727,
+          "nodes": [
+            {
+              "id": "sat1",
+              "label": "S1",
+              "position": [
+                0.2,
+                0.2
+              ]
+            },
+            {
+              "id": "sat2",
+              "label": "S2",
+              "position": [
+                0.8,
+                0.2
+              ]
+            },
+            {
+              "id": "sat3",
+              "label": "S3",
+              "position": [
+                0.18,
+                0.58
+              ]
+            },
+            {
+              "id": "sat4",
+              "label": "S4",
+              "position": [
+                0.82,
+                0.58
+              ]
+            },
+            {
+              "id": "phone",
+              "label": "TU",
+              "position": [
+                0.5,
+                0.72
+              ]
+            }
+          ],
+          "edges": [
+            {
+              "source": "sat1",
+              "target": "phone"
+            },
+            {
+              "source": "sat2",
+              "target": "phone"
+            },
+            {
+              "source": "sat3",
+              "target": "phone"
+            },
+            {
+              "source": "sat4",
+              "target": "phone"
+            }
+          ],
+          "color": "#7DE0DE",
+          "layer": "diagrams",
+          "z": 20,
+          "time_unit": "speech"
+        },
+        {
+          "type": "statistic",
+          "text": "SATELLITI",
+          "start": 0.636363636,
+          "end": 0.954545455,
+          "animation": "pop",
+          "value": "ALMENO 4",
+          "position": [
+            0.5,
+            0.42
+          ],
+          "size": [
+            0.84,
+            0.22
+          ],
+          "style": "statistic",
+          "color": "#7DE0DE",
+          "layer": "text",
+          "z": 40,
+          "time_unit": "speech"
+        }
+      ],
+      "transition": {
+        "type": "zoom_through",
+        "target": [
+          0.5,
+          0.72
+        ],
+        "duration": 0.036363636,
+        "time_unit": "scene"
+      },
+      "delivery": "natural",
+      "effects": [],
+      "time_unit": "scene"
+    },
+    {
+      "id": "s_00000006",
+      "text": "Il quarto satellite serve anche a correggere un problema: l'orologio del telefono non è abbastanza preciso. I satelliti, invece, usano orologi atomici.",
+      "duration": null,
+      "motion": "pan_left",
+      "assets": [
+        {
+          "id": "clock_comparison",
+          "prompt": "Vertical scientific comparison with one consistent lighting style: in the upper half, a clearly isolated atomic-clock assembly aboard a GPS satellite near normalized (0.51, 0.33), recognizable as a compact metallic scientific instrument with a resonator chamber. In the lower half, an ordinary smartphone timing circuit and a simple unlabeled clock symbol near (0.50, 0.67). Use visual precision and metallic construction to distinguish the satellite clock from the consumer device; no numeric time displays, tick labels or written headings. Keep space near y=0.28 for OROLOGIO ATOMICO and y=0.64 for TELEFONO. The crop [0.22, 0.08, 0.58, 0.50] must isolate the upper atomic-clock assembly without cutting off its main structure. Treat the two devices as a clean conceptual comparison, not as an impossible cutaway photograph."
+        }
+      ],
+      "visual_events": [
+        {
+          "type": "show_image",
+          "asset": "clock_comparison",
+          "start": 0.0,
+          "end": 1.0,
+          "position": [
+            0.5,
+            0.5
+          ],
+          "size": [
+            1,
+            1
+          ],
+          "layer": "images",
+          "z": 10,
+          "transition": {
+            "type": "cut",
+            "duration": 0.0,
+            "target": [
+              0.5,
+              0.5
+            ],
+            "time_unit": "scene"
+          }
+        },
+        {
+          "type": "pan",
+          "asset": "clock_comparison",
+          "start": 0.0,
+          "end": 0.45,
+          "from_rect": [
+            0.1,
+            0.06,
+            0.88,
+            0.88
+          ],
+          "to": [
+            0.02,
+            0.06,
+            0.88,
+            0.88
+          ]
+        },
+        {
+          "type": "show_text",
+          "text": "TELEFONO",
+          "start": 0.1,
+          "end": 0.5,
+          "animation": "slide_up",
+          "position": [
+            0.5,
+            0.64
+          ],
+          "style": "body",
+          "color": "#F4F6FC",
+          "layer": "text",
+          "z": 40,
+          "time_unit": "speech"
+        },
+        {
+          "type": "show_text",
+          "text": "OROLOGIO ATOMICO",
+          "start": 0.4,
+          "end": 0.9,
+          "animation": "pop",
+          "position": [
+            0.5,
+            0.28
+          ],
+          "style": "body",
+          "color": "#F4F6FC",
+          "layer": "text",
+          "z": 40,
+          "time_unit": "speech"
+        },
+        {
+          "type": "reframe",
+          "start": 0.5,
+          "end": 0.8,
+          "to": [
+            0.22,
+            0.08,
+            0.58,
+            0.5
+          ],
+          "asset": "clock_comparison"
+        }
+      ],
+      "transition": {
+        "type": "blur",
+        "duration": 0.03,
+        "target": [
+          0.5,
+          0.5
+        ],
+        "time_unit": "scene"
+      },
+      "delivery": "natural",
+      "effects": [],
+      "time_unit": "scene"
+    },
+    {
+      "id": "s_00000007",
+      "text": "E qui entra in gioco Einstein. A causa della relatività, gli orologi sui satelliti scorrono a una velocità leggermente diversa da quelli sulla Terra. Senza correggere questo effetto, il GPS accumulerebbe rapidamente errori.",
+      "duration": null,
+      "motion": "zoom_out",
+      "assets": [
+        {
+          "id": "relativity",
+          "prompt": "Elegant conceptual scientific view: Earth occupying the lower middle of the frame, one GPS satellite high to the right, and two small simplified unlabeled clocks, one associated with the spacecraft and one with the Earth surface. Place the spacecraft clock near normalized (0.62, 0.30), which will move toward (0.65, 0.25) during the zoom-out and be highlighted there. A subtle curved spacetime grid near Earth suggests relativity without a dramatic vortex or fantasy portal. The timing difference is conceptually tiny: do not illustrate clocks differing by many hours or give numerical drift values. Maintain uncluttered dark space for the headline and the explanatory lower-middle overlay; no Einstein portrait, text, equation or labels. Keep all critical objects inside the initial central 80-percent crop as well as the full view."
+        }
+      ],
+      "visual_events": [
+        {
+          "type": "show_image",
+          "asset": "relativity",
+          "start": 0.0,
+          "end": 1.0,
+          "position": [
+            0.5,
+            0.5
+          ],
+          "size": [
+            1,
+            1
+          ],
+          "layer": "images",
+          "z": 10,
+          "transition": {
+            "type": "cut",
+            "duration": 0.0,
+            "target": [
+              0.5,
+              0.5
+            ],
+            "time_unit": "scene"
+          }
+        },
+        {
+          "type": "zoom",
+          "asset": "relativity",
+          "start": 0.0,
+          "end": 0.958333333,
+          "from_rect": [
+            0.1,
+            0.1,
+            0.8,
+            0.8
+          ],
+          "to": [
+            0,
+            0,
+            1,
+            1
+          ]
+        },
+        {
+          "type": "headline",
+          "text": "E QUI ENTRA EINSTEIN",
+          "start": 0.041666667,
+          "end": 0.333333333,
+          "animation": "pop",
+          "position": [
+            0.5,
+            0.18
+          ],
+          "style": "headline",
+          "color": "#F4F6FC",
+          "layer": "text",
+          "z": 40,
+          "time_unit": "speech"
+        },
+        {
+          "type": "highlight",
+          "start": 0.333333333,
+          "end": 0.75,
+          "position": [
+            0.65,
+            0.25
+          ],
+          "size": [
+            0.24,
+            0.24
+          ],
+          "color": "#7DE0DE",
+          "layer": "annotations",
+          "z": 30,
+          "time_unit": "speech"
+        },
+        {
+          "type": "show_text",
+          "text": "IL TEMPO NON SCORRE ESATTAMENTE UGUALE",
+          "start": 0.458333333,
+          "end": 0.875,
+          "animation": "fade",
+          "position": [
+            0.5,
+            0.56
+          ],
+          "style": "body",
+          "color": "#F4F6FC",
+          "layer": "text",
+          "z": 40,
+          "time_unit": "speech"
+        }
+      ],
+      "transition": {
+        "type": "zoom_out",
+        "duration": 0.029166667,
+        "target": [
+          0.5,
+          0.5
+        ],
+        "time_unit": "scene"
+      },
+      "delivery": "natural",
+      "effects": [],
+      "time_unit": "scene"
+    },
+    {
+      "id": "s_00000008",
+      "text": "Quindi quel semplice puntino blu sulla mappa esiste grazie a satelliti, onde radio, orologi atomici e relatività. Tutto questo, solo per dirti dove sei.",
+      "duration": null,
+      "motion": "zoom_in",
+      "assets": [
+        {
+          "id": "final_map",
+          "prompt": "Satisfying closing shot: close view of a modern smartphone map, centered in the lower middle, with simplified dark street lines and a single bright cyan-blue location dot exactly near normalized (0.50, 0.61). No street names, app branding, navigation text or buttons with letters. A subtle Earth horizon and a few small GPS satellites remain in the distant upper background to connect the final phone view to the previous science scenes. Ensure the focus crop [0.32, 0.45, 0.36, 0.32] isolates the map and location dot clearly. Keep the upper headline area and bottom subtitle area dark and uncluttered; polished cinematic lighting, clean final composition."
+        }
+      ],
+      "visual_events": [
+        {
+          "type": "show_image",
+          "asset": "final_map",
+          "start": 0.0,
+          "end": 1.0,
+          "position": [
+            0.5,
+            0.5
+          ],
+          "size": [
+            1,
+            1
+          ],
+          "layer": "images",
+          "z": 10,
+          "transition": {
+            "type": "cut",
+            "duration": 0.0,
+            "target": [
+              0.5,
+              0.5
+            ],
+            "time_unit": "scene"
+          }
+        },
+        {
+          "type": "headline",
+          "text": "SATELLITI + TEMPO + EINSTEIN",
+          "start": 0.111111111,
+          "end": 0.611111111,
+          "animation": "pop",
+          "position": [
+            0.5,
+            0.18
+          ],
+          "style": "headline",
+          "color": "#F4F6FC",
+          "layer": "text",
+          "z": 40,
+          "time_unit": "speech"
+        },
+        {
+          "type": "focus",
+          "start": 0.444444444,
+          "end": 0.833333333,
+          "to": [
+            0.32,
+            0.45,
+            0.36,
+            0.32
+          ],
+          "asset": "final_map"
+        },
+        {
+          "type": "show_text",
+          "text": "TUTTO PER QUEL PUNTINO BLU.",
+          "start": 0.666666667,
+          "end": 0.977777778,
+          "animation": "fade",
+          "position": [
+            0.5,
+            0.56
+          ],
+          "style": "body",
+          "color": "#F4F6FC",
+          "layer": "text",
+          "z": 40,
+          "time_unit": "speech"
+        }
+      ],
+      "transition": {
+        "type": "crossfade",
+        "duration": 0.033333333,
+        "target": [
+          0.5,
+          0.5
+        ],
+        "time_unit": "scene"
+      },
+      "delivery": "natural",
+      "effects": [],
+      "time_unit": "scene"
+    }
+  ],
+  "settings": {
+    "video_mode": "educational",
+    "visual_style": "Consistent premium educational science documentary illustration, vertical 9:16 full-bleed frame. Deep navy background #101727, neutral silver and white objects, restrained cyan accents #7DE0DE, clean readable silhouettes, physically plausible satellite hardware, one coherent semi-realistic 3D illustration style across all scenes. Conceptual diagrams and combined Earth/phone views are schematic and not to scale. Keep important objects inside x=0.10 to 0.90 and y=0.20 to 0.76; preserve uncluttered dark space in the upper headline area and bottom subtitle area. No generated typography, letters, numbers, logos, watermarks, borders, infographic captions or UI text. Text, arrows, highlights, number cards and labeled diagram connections will be composed separately by the video engine.",
+    "voice_provider": "gemini",
+    "voice": "Charon",
+    "speed": 1.05,
+    "subtitles_enabled": true,
+    "audio_mode": "full_generated",
+    "voice_prompt": "Una sola voce narrante maschile italiana, Charon, con timbro medio-profondo, caldo, pulito e uniforme per tutta la narrazione. Stile divulgatore scientifico contemporaneo: curioso, preciso, energico ma naturale; articolazione chiara e ritmo vivace adatto a un video breve. Italiano standard, senza accento regionale marcato. Nessuna recitazione inquietante, sussurro, urlo, imitazione o cambio di voce. Leggi integralmente soltanto il testo dopo TESTO; i titoli, le statistiche e queste istruzioni non sono testo parlato. Pronuncia GPS come 'gi pi esse' ed Einstein come 'Àin-stain'. Apri con curiosità, spiega tempo e distanza con chiarezza, evidenzia naturalmente il bisogno di almeno quattro satelliti e la correzione relativistica, poi chiudi con soddisfazione sul puntino blu della mappa. Mantieni lo stesso timbro anche nei passaggi più energici. Usa punteggiatura e piccole pause naturali fra i paragrafi, senza pause artificiali o cambi di personaggio. Obiettivo indicativo: un unico audio continuo di circa 60–90 secondi; dai sempre priorità alla lettura integrale e comprensibile, senza tagli, omissioni o parole aggiunte.",
+    "image_provider": "cloudflare",
+    "gemini_max_attempts": 1,
+    "pause_seconds": 0,
+    "resolution": "1080x1920",
+    "fps": 30,
+    "fit": "cover",
+    "subtitle_size": 62,
+    "subtitle_bottom": 340,
+    "music_volume": 0.04,
+    "music_preset": "mist",
+    "ollama_model": "qwen2.5:3b"
+  }
+}

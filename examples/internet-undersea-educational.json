@@ -1,0 +1,109 @@
+{
+  "title": "Internet attraversa gli oceani soprattutto via cavo",
+  "story": "Internet does not cross the oceans mainly by satellite. Una spiegazione visiva della rete di cavi sottomarini, in 72 secondi.",
+  "settings": {
+    "video_mode": "educational",
+    "visual_style": "Clean educational illustration, deep navy ocean, turquoise fiber-optic routes, accurate proportions, no baked-in text. Consistent visual language across scenes.",
+    "voice_provider": "espeak", "voice": "it", "speed": 1.15,
+    "pause_seconds": 0, "audio_mode": "scenes",
+    "resolution": "720x1280", "fps": 24, "fit": "cover",
+    "subtitles_enabled": true, "subtitle_size": 48, "subtitle_bottom": 210
+  },
+  "scenes": [
+    {
+      "id": "s_00000001", "duration": 12, "motion": "still",
+      "text": "Quando mandi un messaggio dall'altra parte dell'oceano, immagini un satellite? In realta, la maggior parte dei collegamenti tra continenti passa sotto il mare. Il protagonista e un cavo, non un'antenna nello spazio.",
+      "assets": [
+        {"id": "earth", "prompt": "Earth with Atlantic ocean centered, continents on either side, clean editorial infographic style, no text."},
+        {"id": "cable", "prompt": "Undersea fiber-optic cable laid across a deep ocean floor, turquoise signal glow, clean technical illustration, no text."}
+      ],
+      "visual_events": [
+        {"type": "show_image", "asset": "earth", "start": 0, "end": 5.5},
+        {"type": "headline", "text": "INTERNET VIA SATELLITE?", "start": 0, "end": 2.5, "animation": "pop"},
+        {"type": "reframe", "start": 2.5, "end": 4.5, "to": [0.15, 0.12, 0.70, 0.70]},
+        {"type": "show_image", "asset": "cable", "start": 5.5, "end": 12, "transition": {"type": "zoom_through", "target": [0.65, 0.40], "duration": 0.4}},
+        {"type": "show_text", "text": "GUARDA SOTTO IL MARE", "style": "headline", "start": 6, "end": 8.5, "animation": "slide_up"},
+        {"type": "arrow", "points": [[0.75, 0.40], [0.60, 0.61]], "start": 8, "end": 10, "animation": "fade"},
+        {"type": "highlight", "position": [0.55, 0.65], "size": [0.65, 0.12], "start": 9, "end": 12}
+      ]
+    },
+    {
+      "id": "s_00000002", "duration": 12, "motion": "still",
+      "transition": {"type": "crossfade", "duration": 0.3},
+      "text": "Secondo l'Unione internazionale delle telecomunicazioni, i cavi sottomarini trasportano oltre il novantanove per cento dei dati internazionali. Attenzione: parliamo degli scambi internazionali, non di ogni singolo messaggio o di tutto il traffico locale.",
+      "assets": [{"id": "earth", "prompt": "World connectivity map with submarine routes, navy and turquoise, clean educational illustration, no text."}],
+      "visual_events": [
+        {"type": "show_image", "asset": "earth", "start": 0, "end": 12},
+        {"type": "statistic", "value": ">99%", "text": "dei dati internazionali • ITU", "start": 1, "end": 7, "animation": "pop"},
+        {"type": "label", "text": "INTERNAZIONALE ≠ TUTTO IL TRAFFICO", "position": [0.5, 0.60], "start": 7, "end": 12, "animation": "fade"},
+        {"type": "focus", "start": 8, "end": 11, "to": [0.2, 0.18, 0.6, 0.6]}
+      ]
+    },
+    {
+      "id": "s_00000003", "duration": 12, "motion": "still",
+      "transition": {"type": "slide_left", "duration": 0.35},
+      "text": "Dentro il cavo ci sono fibre ottiche. I dati viaggiano come impulsi di luce. Strati protettivi difendono le fibre durante la posa e l'uso. Un solo collegamento fisico puo quindi trasportare enormi quantita di informazioni.",
+      "assets": [
+        {"id": "cable", "prompt": "Submarine cable cross-section with protective layers, clean educational illustration, no text."},
+        {"id": "fiber", "prompt": "Fiber optic strands carrying bright pulses of light, macro technical illustration, turquoise and navy, no text."}
+      ],
+      "visual_events": [
+        {"type": "show_image", "asset": "cable", "start": 0, "end": 4},
+        {"type": "circle", "position": [0.55, 0.64], "size": [0.35, 0.20], "start": 1, "end": 4},
+        {"type": "label", "text": "PROTEZIONE ESTERNA", "start": 1, "end": 4, "position": [0.5, 0.3]},
+        {"type": "show_image", "asset": "fiber", "start": 4, "end": 8, "transition": {"type": "zoom_through", "target": [0.55, 0.64], "duration": 0.4}},
+        {"type": "headline", "text": "DATI = IMPULSI DI LUCE", "start": 4.5, "end": 7.5, "animation": "typewriter"},
+        {"type": "zoom", "start": 5, "end": 7.5, "to": [0.15, 0.25, 0.7, 0.5]},
+        {"type": "show_image", "asset": "fiber", "start": 8, "end": 12, "to": [0.3, 0.2, 0.45, 0.6], "transition": {"type": "whip_right", "duration": 0.25}},
+        {"type": "line", "points": [[0.15, 0.55], [0.85, 0.55]], "start": 9, "end": 12}
+      ]
+    },
+    {
+      "id": "s_00000004", "duration": 12, "motion": "still",
+      "transition": {"type": "blur", "duration": 0.35},
+      "text": "Il percorso non va dal tuo telefono direttamente al fondo dell'oceano. Prima attraversa reti terrestri e stazioni costiere, poi il cavo sottomarino, e infine altre reti. Questo schema semplifica un viaggio che coinvolge molte infrastrutture.",
+      "visual_events": [
+        {"type": "background", "color": "#101727", "start": 0, "end": 12},
+        {"type": "headline", "text": "IL VIAGGIO DEI DATI", "start": 0.3, "end": 3, "animation": "slide_up"},
+        {"type": "diagram", "start": 2, "end": 12, "animation": "fade", "nodes": [
+          {"id": "phone", "label": "Telefono", "position": [0.22, 0.30]},
+          {"id": "coast", "label": "Costa A", "position": [0.72, 0.30]},
+          {"id": "ocean", "label": "Cavo", "position": [0.72, 0.50]},
+          {"id": "destination", "label": "Costa B", "position": [0.22, 0.50]}
+        ], "edges": [
+          {"source": "phone", "target": "coast", "label": "rete terrestre"},
+          {"source": "coast", "target": "ocean"},
+          {"source": "ocean", "target": "destination", "label": "oceano"}
+        ]},
+        {"type": "label", "text": "SCHEMA SEMPLIFICATO", "position": [0.5, 0.65], "start": 8, "end": 12}
+      ]
+    },
+    {
+      "id": "s_00000005", "duration": 12, "motion": "still",
+      "transition": {"type": "zoom_in", "duration": 0.3},
+      "text": "I satelliti restano utilissimi per raggiungere luoghi isolati, navi e aree prive di collegamenti terrestri. Ma hanno un ruolo diverso. Non confondere l'accesso satellitare che arriva a un utente con la rete principale dei collegamenti tra continenti.",
+      "assets": [{"id": "earth", "prompt": "Earth with remote islands and ocean, educational navy and turquoise illustration, no text."}],
+      "visual_events": [
+        {"type": "show_image", "asset": "earth", "start": 0, "end": 12},
+        {"type": "headline", "text": "SATELLITI: UN ALTRO RUOLO", "start": 0.5, "end": 3, "animation": "pop"},
+        {"type": "pan", "start": 3, "end": 6, "from_rect": [0, 0.15, 0.65, 0.65], "to": [0.35, 0.15, 0.65, 0.65]},
+        {"type": "label", "text": "ACCESSO IN AREE REMOTE", "start": 4, "end": 8, "position": [0.5, 0.35]},
+        {"type": "reframe", "start": 8, "end": 11, "to": [0, 0, 1, 1]},
+        {"type": "label", "text": "ACCESSO ≠ DORSALE INTERCONTINENTALE", "start": 8, "end": 12, "position": [0.5, 0.6]}
+      ]
+    },
+    {
+      "id": "s_00000006", "duration": 12, "motion": "still",
+      "transition": {"type": "zoom_out", "duration": 0.35},
+      "text": "La prossima volta che un video o una chiamata attraversa un oceano, pensa alle fibre sotto il mare. Internet sembra invisibile, ma dipende anche da oggetti molto concreti. Per approfondire, cerca le risorse dell'Unione internazionale delle telecomunicazioni sui cavi sottomarini.",
+      "assets": [{"id": "cable", "prompt": "Undersea cable connecting distant continents, clean educational illustration, no text."}],
+      "visual_events": [
+        {"type": "show_image", "asset": "cable", "start": 0, "end": 12},
+        {"type": "crop", "start": 0, "end": 2, "to": [0.2, 0.35, 0.6, 0.6]},
+        {"type": "reframe", "start": 2, "end": 6, "to": [0, 0, 1, 1]},
+        {"type": "headline", "text": "IL WEB HA RADICI NEL MARE", "start": 3, "end": 8, "animation": "fade"},
+        {"type": "show_text", "text": "Fonte: ITU • Submarine Cable Resilience", "position": [0.5, 0.65], "style": "label", "start": 8, "end": 12}
+      ]
+    }
+  ]
+}

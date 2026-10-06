@@ -263,7 +263,7 @@ def google_chirp_tts(text: str, output: Path, voice: str, speed: float, ctx):
 
 
 def google_gemini_tts(text: str, output: Path, voice: str, speed: float, delivery: str, ctx,
-                     voice_prompt: str = "", max_attempts: int = 2):
+                     voice_prompt: str = "", max_attempts: int = 2, voice_directions: str = ""):
     key=os.getenv("GOOGLE_GEMINI_TTS_KEY", "").strip()
     if not key:
         raise RuntimeError("Configura GOOGLE_GEMINI_TTS_KEY nel file .env per usare Gemini Flash TTS.")
@@ -276,6 +276,8 @@ def google_gemini_tts(text: str, output: Path, voice: str, speed: float, deliver
         raise ValueError("Gemini TTS consente uno o due tentativi per segmento.")
     if voice_prompt.strip():
         direction += " Profilo vocale comune a tutte le scene: " + voice_prompt.strip()
+    if voice_directions.strip():
+        direction += " Regia specifica dei passaggi (istruzioni da applicare, non da leggere): " + voice_directions.strip()
     if speed < .85: pace="molto lento"
     elif speed < .96: pace="leggermente lento"
     elif speed <= 1.04: pace="naturale"

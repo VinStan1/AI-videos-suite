@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#101017">
 <meta name="description" content="Il tuo studio video AI: dal copione al montaggio, con immagini, voce e sottotitoli. Crea contenuti di ogni genere con il tuo controllo creativo.">
 <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/static/style.css?v=ai-studio-1"><script src="/static/app.js?v=ai-studio-1" defer></script>
+<link rel="stylesheet" href="/static/style.css?v=composition-1"><script src="/static/app.js?v=composition-1" defer></script>
 </head>
 <body>
 <aside class="sidebar">
@@ -18,7 +18,7 @@
     <p class="eyebrow">SERVIZI OPZIONALI <button id="refresh-services" class="text-button" title="Aggiorna stato">Aggiorna</button></p>
     <div id="services" class="services">Verifica dei servizi...</div>
     <p class="muted small">I servizi spenti non bloccano i caricamenti manuali. Attivali separatamente dagli script Docker.</p>
-    <a href="/docs" target="_blank" class="muted small">Documentazione API</a><span class="version">v1.0.0</span>
+    <a href="/guide" target="_blank" class="muted small">Guida utilizzatore</a><br><a href="/docs" target="_blank" class="muted small">Documentazione API</a><span class="version">v1.0.0</span>
   </div>
 </aside>
 <main>
@@ -58,6 +58,8 @@
     </section>
     <section class="panel" id="scenes-panel"><div class="section-heading"><div><span class="eyebrow">02 / REGIA</span><h2>Dai forma alla tua visione.</h2></div><span id="scene-count" class="badge"></span></div>
       <label>Stile visivo e riferimenti di continuita'<textarea id="visual-style" rows="2"></textarea></label><label>Motore immagini<select id="image-provider"><option value="cloudflare">Cloudflare Workers AI - FLUX.1 Schnell</option><option value="huggingface">Hugging Face Inference - API cloud gratuita con quota</option><option value="comfyui">ComfyUI - servizio locale</option></select></label>
+      <label>Modalita' video<select id="video-mode"><option value="narrative">Narrativa / classica (compatibile con i vecchi storyboard)</option><option value="educational">Educational / ritmo rapido, reframing e titoli automatici</option></select></label>
+      <p class="muted small">Educational riutilizza gli asset con shot brevi. Per la regia precisa usa Composizione visiva nella scena: tempi in secondi relativi alla scena, coordinate da 0 a 1.</p>
       <div class="row wrap"><button id="add-scene">+ Aggiungi scena</button><button id="prompts">Prompt mancanti con Ollama</button><button id="download-prompts">Scarica prompt per ChatGPT</button><label class="file-button">Carica immagini in ordine<input type="file" id="bulk-images" accept="image/png,image/jpeg,image/webp" multiple hidden></label><button id="images">Genera immagini mancanti</button></div>
       <p class="muted small">Per il caricamento multiplo usa 01.png, 02.png... Il numero dei file deve coincidere con quello delle scene. Puoi anche caricare o sostituire ogni immagine singolarmente.</p>
       <div id="scene-list"></div>
@@ -67,7 +69,7 @@
       <label>Prompt vocale comune (Gemini)<textarea id="voice-prompt" rows="3" maxlength="2000" placeholder="Voce leggermente piu' profonda, timbro uniforme, senza sussurri o cambi di voce."></textarea></label>
       <label><input id="gemini-retry" type="checkbox"> Gemini: ritenta una volta se il modello risponde senza audio (consuma un'altra chiamata)</label>
       <div class="row wrap"><button id="voice" class="primary">Genera voci mancanti</button><label class="file-button">Carica narrazione completa<input type="file" data-upload="full_audio" accept="audio/*,.m4a,.mp4,.webm" hidden></label><button id="assemble">Assembla / aggiorna audio</button><button id="remove-full">Scollega audio unico</button></div>
-      <p class="muted small">La narrazione completa generata unisce le scene e usa una sola richiesta TTS, con regia Naturale e prompt vocale comune. Le regie delle singole scene e la pausa locale tra scene valgono solo per l'audio per scena. Se abiliti il tentativo aggiuntivo di Gemini, un errore senza audio puo' consumare una seconda chiamata. Per cambi immagine precisi usa Whisper; senza allineamento, le durate sono proporzionali al testo.</p>
+      <p class="muted small">La narrazione completa generata unisce le scene e usa una sola richiesta TTS, con regia Naturale e prompt vocale comune. Con Gemini, i prompt vocali delle scene guidano anche i singoli paragrafi della narrazione completa. I preset di regia delle scene e la pausa locale tra scene valgono solo per l'audio per scena. Se abiliti il tentativo aggiuntivo di Gemini, un errore senza audio puo' consumare una seconda chiamata. Per cambi immagine precisi usa Whisper; senza allineamento, le durate sono proporzionali al testo.</p>
       <div id="narration-player"></div>
     </section>
     <section class="panel" id="captions-panel"><div class="section-heading"><div><span class="eyebrow">04 / SOTTOTITOLI</span><h2>Ogni parola, al momento giusto.</h2></div><span id="caption-status" class="badge"></span></div>

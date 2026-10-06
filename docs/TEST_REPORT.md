@@ -1,5 +1,27 @@
 # Resoconto delle verifiche - AI Video Studio 1.0.0
 
+## Motore di composizione educational - 5 ottobre 2026
+
+- **116 test superati**, eseguendo direttamente la suite completa in un container
+  temporaneo. I due test che richiedono una voce offline configurano ora eSpeak
+  esplicitamente nei propri progetti; i provider predefiniti dell'app restano invariati.
+- Clip legacy confrontata byte per byte con `render_segment` originale: identica,
+  con lo stesso filtro zoompan e la stessa chiave cache.
+- Verificati parsing di tutti gli esempi, coordinate, tempi, asset, livelli,
+  camera, primitive, dieci transizioni e target di zoom-through.
+- Montaggio reale con shot temporizzati, audio, cache riutilizzata e invalidazione
+  dopo la modifica di un overlay; asset nominati via API e protezione dei manuali.
+- Annullamento della codifica senza output parziali; overlay aggiunti a scene
+  legacy con immagini manuali conservano il fondo originale.
+- Chrome headless: import/export dei campi educational, upload di asset nominati,
+  salvataggio e ricaricamento, cambio modalita' audio senza perdere eventi, guida
+  accessibile e layout a 1440/390/320 pixel, senza errori JavaScript/CSP.
+- Demo educational renderizzata: 72.000 secondi, 540x960 a 24 fps, H.264 e AAC,
+  illustrazioni schematiche originali, voce eSpeak e sottotitoli stimati.
+- Nessuna generazione cloud o inferenza di modelli AI esterni usata nei test/demo.
+- Una deprecazione FastAPI/Starlette riguardante httpx rimane nella suite;
+  non e' un errore di test o di render.
+
 ## Restyling - 5 ottobre 2026
 
 - Immagine Docker ricostruita e applicata all'installazione locale.
@@ -156,3 +178,67 @@ I test lavorano in cartelle temporanee, non nei progetti della tua installazione
 Lo smoke test, invece, aggiunge un progetto demo alla cartella dati corrente.
 Per verificare i modelli avvia separatamente il servizio desiderato e prova un
 breve testo o una sola immagine prima di lanciare un intero episodio.
+
+## Storyboard completo e prompt vocali per scena — 6 ottobre 2026
+
+- Suite completa nel container dell'app, con sorgenti aggiornati e dati
+  temporanei: **127 test superati**. Un avviso di deprecazione Starlette/httpx.
+- Verificati profilo vocale comune e `scenes[].voice_prompt`, sia con audio per
+  scena sia con narrazione completa in una richiesta. Le istruzioni rimangono
+  separate dal testo letto e vengono conservate anche nei ritentativi Gemini
+  e nei segmenti con pause esplicite.
+- Verificati import/export API, invalidazione della sola voce generata
+  interessata, cache dei vecchi storyboard e protezione degli audio manuali.
+- `examples/gps-educational.json`: 8 scene, 8 prompt immagine, 8 prompt vocali
+  locali e 37 eventi. La pipeline immagini, con provider simulato, ha ricevuto
+  esattamente gli 8 prompt degli asset e lo stile comune. Compositi 105
+  fotogrammi campione con tutti gli overlay, camera e transizioni.
+- Chrome: importazione GPS, visualizzazione dei prompt comuni/locali, modifica,
+  cambio modalita' audio, salvataggio, export, reload, guida e conservazione
+  dei prompt degli asset. Nessun errore browser o overflow a 1440/390/320 px.
+- Schema documentato rigenerato dal modello Pydantic; controllo sintattico
+  JavaScript e compilazione Python superati.
+
+Le chiamate AI dei test sono simulate. Questi controlli verificano le istruzioni
+inviate e la composizione, non la qualita' delle immagini o la durata di una
+voce realmente generata. I tempi GPS pianificati sommano 81 secondi e devono
+essere confrontati con la durata effettiva degli audio prima del render finale.
+
+### GPS con unico prompt vocale — correzione del 6 ottobre 2026
+
+Il JSON GPS usa ora `audio_mode: "full_generated"`, un solo
+`settings.voice_prompt` e `gemini_max_attempts: 1`; i prompt vocali locali
+sono omessi. Il test `test_gps_uses_one_google_request_with_one_common_voice_prompt`
+attraversa la pipeline e il provider Google con HTTP simulato: verifica una
+sola richiesta, il prompt comune presente una volta e il testo completo delle
+otto scene, senza istruzioni locali. Una seconda generazione invariata usa
+la cache. La regia per scena resta facoltativa negli altri storyboard.
+Suite completa dopo la correzione: **128 test superati**, con il solo avviso
+Starlette/httpx gia' presente.
+
+## Tempi relativi di scene, parlata e transizioni — 6 ottobre 2026
+
+- **144 test superati**; un avviso Starlette/httpx gia' presente.
+- `time_unit` supporta `seconds` (storico), `scene` e `speech`. Gli eventi
+  ereditano l'unita' della scena o possono sostituirla. Le transizioni hanno
+  un'unita' indipendente; quelle relative sono contenute nello shot disponibile.
+- Verificati frazioni fuori da 0–1, eventi misti, camera sovrapposte, dati audio
+  invalidi, cache e render legacy, durata della parlata separata dalla pausa,
+  transizioni relative e mantenimento del JSON sorgente.
+- Render reale FFmpeg di una scena con titolo relativo alla parlata: tempi
+  risolti corretti e hash invariati di WAV e immagine sorgente.
+- La conversione del GPS esistente rispetta tutte le otto durate audio reali.
+  Il primo evento, prima fisso a 9s, termina a 7.873333s; la parlata termina a
+  7.673333s. Nessuna nuova richiesta a Google o ai generatori di immagini.
+- Il GPS d'esempio usa durate manuali vuote e tempi relativi; verificata la
+  normalizzazione con audio unico da 62.5s, 83.842667s e 95s.
+- Chrome: import/export, modifica e cambio modalita' audio conservano frazioni,
+  unita' e transizioni. Reload e guida corretti, nessun overflow a 1440/390/320px,
+  nessun errore browser e nessun nuovo pulsante audio.
+
+Il progetto GPS aperto (`p_7cf988bd0a6c`) e' stato convertito conservando provider,
+impostazioni, copione, prompt e media. Il render di anteprima e' completato:
+83.875 secondi, 540x960 a 24fps, H.264/AAC. Gli hash dei 16 file sorgente
+(8 audio e 8 immagini) sono invariati. La differenza rispetto agli 83.842667
+secondi di narrazione e' la quantizzazione ai fotogrammi, entro la tolleranza
+del renderer. La conversione non ha richiesto nuove chiamate AI.

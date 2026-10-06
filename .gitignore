@@ -4,5 +4,6 @@ models/
 __pycache__/
 .pytest_cache/
 .test-venv/
+artifacts/
 *.pyc
 *.log

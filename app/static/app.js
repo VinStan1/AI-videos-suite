@@ -5,6 +5,7 @@ const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;',
 const endpoint = suffix => `/api/projects/${project.id}${suffix}`;
 const fileUrl = asset => endpoint('/file/' + asset.path.split('/').map(encodeURIComponent).join('/')) + '?v=' + asset.sha256;
 const freshId = () => 's_' + crypto.randomUUID().replaceAll('-','').slice(0,8);
+const imageKey = (scene,asset='default') => asset==='default'?scene:scene+'__'+asset;
 const active = () => currentJob && ['queued','running'].includes(currentJob.status);
 const labels = {manual:'Caricato da te',generated:'Generato localmente',library:'Libreria locale',espeak:'eSpeak / prova',cloudflare:'Cloudflare Workers AI',huggingface:'Hugging Face Inference',kokoro:'Kokoro',gemini:'Gemini Flash TTS',chirp:'Chirp 3 HD',comfyui:'ComfyUI',demo:'Segnaposto demo',estimate:'Tempi stimati',whisper:'Trascrizione Whisper',whisper_script:'Whisper + copione',tts_timings:'Timestamp TTS'};
 const googleVoiceOptions = [
@@ -92,7 +93,7 @@ async function createProject() {
 }
 function readForm() {
   const settings={...project.settings,
-    visual_style:$('visual-style').value,image_provider:$('image-provider').value||'cloudflare',voice_provider:$('voice-provider').value,voice:$('voice-name').value,
+    video_mode:$('video-mode').value,visual_style:$('visual-style').value,image_provider:$('image-provider').value||'cloudflare',voice_provider:$('voice-provider').value,voice:$('voice-name').value,
     speed:Number($('speed').value),pause_seconds:Number($('pause').value),audio_mode:$('audio-mode').value,
     voice_prompt:$('voice-prompt').value,gemini_max_attempts:$('gemini-retry').checked?2:1,
     resolution:$('resolution').value,fps:Number($('fps').value),fit:$('fit').value,
@@ -100,9 +101,12 @@ function readForm() {
     music_volume:Number($('music-volume').value),music_preset:$('music-preset').value,subtitles_enabled:$('subtitles-enabled').checked,
     ollama_model:$('ollama-model').value};
   const scenes=[...document.querySelectorAll('.scene-card')].map(card=>({
+    ...project.scenes.find(scene=>scene.id===card.dataset.id),
+    ...readComposition(card),
     id:card.dataset.id,text:card.querySelector('[data-field=text]').value,
     prompt:card.querySelector('[data-field=prompt]').value,motion:card.querySelector('[data-field=motion]').value,
     delivery:card.querySelector('[data-field=delivery]').value,
+    voice_prompt:card.querySelector('[data-field=voice_prompt]').value,
     duration:card.querySelector('[data-field=duration]').value===''?null:Number(card.querySelector('[data-field=duration]').value),
     effects:[...card.querySelectorAll('[data-effect-row]')].map(row=>({
       effect:row.querySelector('[data-effect=type]').value,
@@ -111,6 +115,13 @@ function readForm() {
     }))
   }));
   return {title:$('title').value,story:$('story').value,scenes,settings,revision:project.revision};
+}
+function readComposition(card) {
+  try {
+    const data=JSON.parse(card.querySelector('[data-field=composition]').value);
+    if(!data || Array.isArray(data) || typeof data!=='object' || Object.keys(data).some(key=>!['time_unit','assets','visual_events','transition'].includes(key)))throw new Error('Usa un oggetto con time_unit, assets, visual_events e transition.');
+    return {time_unit:data.time_unit||'seconds',assets:data.assets||[],visual_events:data.visual_events||[],transition:data.transition||null};
+  } catch(error) {throw new Error(`Scena ${card.dataset.id}, composizione: ${error.message}`);}
 }
 async function save(silent=true) {
   if(!project)return;
@@ -122,11 +133,11 @@ function render() {
   $('welcome').hidden=true;$('editor').hidden=false;
   $('title').value=project.title;$('story').value=project.story;$('project-id').textContent=project.id;
   $('save-state').textContent=dirty?'Modifiche non salvate':'Tutto salvato';
-  const mapping={'visual-style':'visual_style','image-provider':'image_provider','voice-provider':'voice_provider','speed':'speed','pause':'pause_seconds',
+  const mapping={'video-mode':'video_mode','visual-style':'visual_style','image-provider':'image_provider','voice-provider':'voice_provider','speed':'speed','pause':'pause_seconds',
     'voice-prompt':'voice_prompt',
     'audio-mode':'audio_mode','resolution':'resolution','fps':'fps','fit':'fit','subtitle-size':'subtitle_size',
     'subtitle-bottom':'subtitle_bottom','music-volume':'music_volume','music-preset':'music_preset','ollama-model':'ollama_model'};
-  for(const [id,key] of Object.entries(mapping))$(id).value=project.settings[key]??(key==='image_provider'?'cloudflare':'');
+  for(const [id,key] of Object.entries(mapping))$(id).value=project.settings[key]??(key==='image_provider'?'cloudflare':key==='video_mode'?'narrative':'');
   renderVoiceOptions(project.settings.voice);
   $('gemini-retry').checked=(project.settings.gemini_max_attempts??2)>1;
   $('subtitles-enabled').checked=project.settings.subtitles_enabled;
@@ -140,13 +151,20 @@ function renderScenes() {
   const perSceneAudio=project.settings.audio_mode==='scenes';
   $('scene-list').innerHTML=project.scenes.map((s,i)=>{
     const image=project.assets.images[s.id],audio=project.assets.audio[s.id],cues=s.effects||[];
+    const composition=JSON.stringify({time_unit:s.time_unit||'seconds',assets:s.assets||[],visual_events:s.visual_events||[],transition:s.transition||null},null,2);
+    const namedAssets=(s.assets||[]).map(asset=>{
+      const media=project.assets.images[imageKey(s.id,asset.id)];
+      return `<div class="named-asset"><strong>${esc(asset.id)}</strong>${media?`<img src="${fileUrl(media)}" alt="Asset ${esc(asset.id)}" loading="lazy">`:''}${badge(media)}<label class="file-button">Carica immagine<input type="file" data-upload="image" data-scene="${s.id}" data-asset="${esc(asset.id)}" accept="image/png,image/jpeg,image/webp" hidden></label><button data-command="image" data-asset="${esc(asset.id)}">Genera asset</button>${media?`<button data-command="remove-image" data-asset="${esc(asset.id)}">Scollega</button>`:''}${media?.stale?`<button data-command="confirm-image" data-asset="${esc(asset.id)}">Mantieni questa</button>`:''}</div>`;
+    }).join('');
     const cueRows=cues.map((cue,cueIndex)=>`<div class="sound-cue" data-effect-row><label>Effetto<select data-effect="type">${effects.map(([value,label])=>`<option value="${value}" ${value===cue.effect?'selected':''}>${label}</option>`).join('')}</select></label><label>Offset (s)<input data-effect="at" type="number" min="0" max="3600" step="0.05" value="${cue.at??0}"></label><label>Volume<input data-effect="volume" type="number" min="0.02" max="1" step="0.01" value="${cue.volume??.25}"></label><button data-command="remove-effect" data-effect-index="${cueIndex}" class="danger" title="Rimuovi effetto">Rimuovi</button></div>`).join('');
     return `<article class="scene-card" data-id="${s.id}"><div class="scene-head"><strong>SCENA ${String(i+1).padStart(2,'0')}</strong><div class="row"><button data-command="up" ${i===0?'disabled':''} title="Sposta su">Su</button><button data-command="down" ${i===project.scenes.length-1?'disabled':''}>Giu</button><button data-command="delete-scene" class="danger">Elimina</button></div></div>
       <div class="scene-body"><div class="scene-media"><div class="image-box">${image?`<img src="${fileUrl(image)}" alt="Immagine scena ${i+1}" loading="lazy">`:'<span>Carica la tua immagine<br>oppure generala</span>'}</div>
         <label class="file-button">${image?'Sostituisci immagine':'Carica immagine'}<input type="file" data-upload="image" data-scene="${s.id}" accept="image/png,image/jpeg,image/webp" hidden></label>${badge(image)}
         <div class="mini-row"><button data-command="image">Genera</button>${image?'<button data-command="remove-image">Scollega</button>':''}</div>${image?.stale?'<button data-command="confirm-image">Mantieni questa</button>':''}</div>
       <div class="scene-fields"><label>Testo letto dalla voce<textarea data-field="text" rows="3">${esc(s.text)}</textarea></label><label>Descrizione / prompt dell'immagine<textarea data-field="prompt" rows="3" placeholder="Puoi scriverlo tu, incollarlo o generarlo con Ollama.">${esc(s.prompt)}</textarea></label>
+        <label>Prompt vocale della scena (Gemini)<textarea data-field="voice_prompt" rows="2" maxlength="2000" placeholder="Enfasi, ritmo e pronuncia per questo passaggio; si aggiunge al prompt vocale comune.">${esc(s.voice_prompt||'')}</textarea></label>
         <div class="scene-options"><label>Movimento<select data-field="motion">${motions.map(([v,l])=>`<option value="${v}" ${v===s.motion?'selected':''}>${l}</option>`).join('')}</select></label><label>Regia vocale<select data-field="delivery">${deliveries.map(([v,l])=>`<option value="${v}" ${v===(s.delivery||'natural')?'selected':''}>${l}</option>`).join('')}</select></label><label>Durata (s), solo per audio unico<input data-field="duration" type="number" min="0.11" max="3600" step="0.01" value="${s.duration??''}" placeholder="Automatica"></label><button data-command="prompt">Genera prompt</button></div>
+        <details class="composition-editor"><summary>Composizione visiva: asset, eventi, transizione</summary><p class="muted small">time_unit: seconds per secondi fissi, scene per frazioni della scena, speech per frazioni della parlata. Nei tempi relativi 0 e' l'inizio, 1 la fine. Le transizioni hanno una propria time_unit. Coordinate 0–1. <a href="/guide" target="_blank">Guida e formato JSON</a></p><textarea data-field="composition" rows="10" spellcheck="false" aria-label="Composizione della scena ${i+1}">${esc(composition)}</textarea><button data-command="apply-composition">Salva composizione</button></details><div class="named-assets">${namedAssets}</div>
         <div class="scene-effects"><div class="scene-effects-head"><span>Effetti locali</span><button data-command="add-effect">Aggiungi effetto</button></div>${cueRows}</div>
       </div></div><div class="scene-audio">${perSceneAudio?`${badge(audio)}${audio?`<audio controls preload="none" src="${fileUrl(audio)}"></audio>`:''}<label class="file-button">Carica audio scena<input type="file" data-upload="scene_audio" data-scene="${s.id}" accept="audio/*,.m4a" hidden></label><button data-command="voice">Genera voce</button>${audio?'<button data-command="remove-audio">Scollega audio</button>':''}${audio?.stale?'<button data-command="confirm-audio">Mantieni questo audio</button>':''}`:'<span class="muted small">Questa scena usa la narrazione completa.</span>'}</div></article>`;
   }).join('')||'<p class="muted">Il tuo storyboard inizia qui. Dividi il copione, importa uno storyboard oppure aggiungi una scena.</p>';
@@ -215,13 +233,13 @@ async function startJob(action,extra={}) {
   currentJob=await api(endpoint('/jobs'),{method:'POST',body});showJob();clearTimeout(pollTimer);pollTimer=setTimeout(pollJob,600);
   $('job-box').scrollIntoView({behavior:'smooth',block:'nearest'});
 }
-async function uploadFile(file,kind,sceneId=null) {
+async function uploadFile(file,kind,sceneId=null,assetId='default') {
   const body=new FormData();body.append('file',file);
-  const url=endpoint('/upload')+'?kind='+kind+(sceneId?'&scene_id='+sceneId:'');
+  const url=endpoint('/upload')+'?kind='+kind+(sceneId?'&scene_id='+sceneId:'')+'&asset_id='+encodeURIComponent(assetId);
   project=await api(url,{method:'POST',body});dirty=false;render();await loadCaptions();
 }
-async function removeAsset(kind,sceneId=null) {
-  await save();project=await api(endpoint('/assets')+'?kind='+kind+(sceneId?'&scene_id='+sceneId:''),{method:'DELETE'});render();await loadCaptions();
+async function removeAsset(kind,sceneId=null,assetId='default') {
+  await save();project=await api(endpoint('/assets')+'?kind='+kind+(sceneId?'&scene_id='+sceneId:'')+'&asset_id='+encodeURIComponent(assetId),{method:'DELETE'});render();await loadCaptions();
 }
 async function serviceStatus() {
   $('services').textContent='Verifica...';
@@ -233,7 +251,7 @@ $('project-list').addEventListener('click',guarded(async e=>{const b=e.target.cl
 $('save').addEventListener('click',guarded(()=>save(false)));
 $('editor').addEventListener('input',e=>{if(!['target-words','caption-method','srt-editor','auto-images','allow-estimated'].includes(e.target.id))markDirty();});
 $('voice-provider').addEventListener('change',()=>{project.settings.voice_provider=$('voice-provider').value;renderVoiceOptions();updateAudioModeUi();markDirty();});
-$('audio-mode').addEventListener('change',()=>{project.settings.audio_mode=$('audio-mode').value;renderScenes();updateAudioModeUi();markDirty();});
+$('audio-mode').addEventListener('change',guarded(async()=>{project.scenes=readForm().scenes;project.settings.audio_mode=$('audio-mode').value;renderScenes();updateAudioModeUi();markDirty();}));
 $('gemini-retry').addEventListener('change',()=>{updateAudioModeUi();markDirty();});
 $('refresh-services').addEventListener('click',guarded(serviceStatus));
 $('split').addEventListener('click',guarded(async()=>{
@@ -243,7 +261,10 @@ $('split').addEventListener('click',guarded(async()=>{
 $('add-scene').addEventListener('click',guarded(async()=>{await save();project.scenes.push({id:freshId(),text:'Scrivi qui il testo della scena.',prompt:'',motion:'zoom_in',delivery:'natural',duration:null,effects:[]});render();markDirty();}));
 $('scene-list').addEventListener('click',guarded(async e=>{
   const b=e.target.closest('[data-command]');if(!b)return;const card=b.closest('.scene-card'),id=card.dataset.id,cmd=b.dataset.command;
+  const assetId=b.dataset.asset||'default';
+  if(cmd==='apply-composition'){await save(false);return;}
   if(['add-effect','remove-effect'].includes(cmd)) {
+    await save();
     const scene=project.scenes.find(s=>s.id===id);scene.effects=scene.effects||[];
     if(cmd==='add-effect') scene.effects.push({effect:'wind',at:0,volume:.25});
     else scene.effects.splice(Number(b.dataset.effectIndex),1);
@@ -256,17 +277,17 @@ $('scene-list').addEventListener('click',guarded(async e=>{
     else {const j=i+(cmd==='up'?-1:1);if(j<0||j>=project.scenes.length)return;[project.scenes[i],project.scenes[j]]=[project.scenes[j],project.scenes[i]];}
     render();markDirty();await save();render();return;
   }
-  if(cmd.startsWith('remove-')) {await removeAsset(cmd==='remove-image'?'image':'scene_audio',id);return;}
+  if(cmd.startsWith('remove-')) {await removeAsset(cmd==='remove-image'?'image':'scene_audio',id,assetId);return;}
   if(cmd.startsWith('confirm-')) {
-    await save();project=await api(endpoint('/assets/confirm')+'?kind='+(cmd==='confirm-image'?'image':'scene_audio')+'&scene_id='+id,{method:'POST'});render();return;
+    await save();project=await api(endpoint('/assets/confirm')+'?kind='+(cmd==='confirm-image'?'image':'scene_audio')+'&scene_id='+id+'&asset_id='+encodeURIComponent(assetId),{method:'POST'});render();return;
   }
   const action={image:'images',voice:'voice',prompt:'prompts'}[cmd];
-  if(action){if(!confirm('Generare di nuovo questo contenuto automatico? I contenuti manuali rimarranno invariati. Per sostituirli devi prima scollegarli.'))return;await startJob(action,{scene_id:id,force:true});}
+  if(action){if(!confirm('Generare di nuovo questo contenuto automatico? I contenuti manuali rimarranno invariati. Per sostituirli devi prima scollegarli.'))return;await startJob(action,{scene_id:id,...(action==='images'||action==='prompts'?{asset_id:assetId}:{}),force:true});}
 }));
 $('editor').addEventListener('change',guarded(async e=>{
   const input=e.target;if(!input.matches('input[data-upload]')||!input.files.length)return;
-  const file=input.files[0],kind=input.dataset.upload,scene=input.dataset.scene||null;
-  await save();await uploadFile(file,kind,scene);toast('Contenuto caricato e salvato.');
+  const file=input.files[0],kind=input.dataset.upload,scene=input.dataset.scene||null,assetId=input.dataset.asset||'default';
+  await save();await uploadFile(file,kind,scene,assetId);toast('Contenuto caricato e salvato.');
 }));
 $('story-file').addEventListener('change',guarded(async e=>{const f=e.target.files[0];if(f){$('story').value=await f.text();markDirty();}}));
 $('storyboard-file').addEventListener('change',guarded(async e=>{
@@ -274,8 +295,8 @@ $('storyboard-file').addEventListener('change',guarded(async e=>{
   if(!Array.isArray(raw.scenes))throw new Error('Il JSON deve contenere un array scenes.');
   if(project.scenes.length&&!confirm('Sostituire lo storyboard corrente con quello importato?'))return;
   await save();
-  const body={title:raw.title||project.title,story:raw.story??project.story,settings:{...project.settings,...(raw.settings||{})},
-    scenes:raw.scenes.map(s=>({id:s.id||freshId(),text:s.text,prompt:s.prompt||'',motion:s.motion||'zoom_in',delivery:s.delivery||'natural',duration:s.duration??null,effects:s.effects||[]})),revision:project.revision};
+  const body={title:raw.title||project.title,story:raw.story??project.story,settings:{...project.settings,...(raw.settings||{}),video_mode:raw.settings?.video_mode||'narrative'},
+    scenes:raw.scenes.map(s=>({...s,id:s.id||freshId(),text:s.text,prompt:s.prompt||'',motion:s.motion||'zoom_in',delivery:s.delivery||'natural',duration:s.duration??null,effects:s.effects||[]})),revision:project.revision};
   project=await api(endpoint('/storyboard'),{method:'PUT',body});render();await listProjects();toast('Storyboard importato.');
 }));
 $('bulk-images').addEventListener('change',guarded(async e=>{

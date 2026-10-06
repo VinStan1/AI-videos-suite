@@ -4,7 +4,10 @@ import json
 import os
 import shutil
 import subprocess
+import tempfile
+import time
 import wave
+from io import BytesIO
 from pathlib import Path
 from PIL import Image, ImageOps, ImageDraw
 
@@ -265,8 +268,56 @@ def render_segment(image: Path, target: Path, scene: dict, frames: int, size: tu
     os.replace(temp,target); prepared.unlink(missing_ok=True)
 
 
+def encode_frames(frames, target: Path, count: int, size, fps: int, ctx):
+    """Stream frames to FFmpeg; retain only a few frames and permit cancellation."""
+    temp=target.with_suffix(".part.mp4")
+    args=["ffmpeg","-hide_banner","-loglevel","error","-y","-threads",THREADS,
+          "-f","rawvideo","-pixel_format","rgb24","-video_size",f"{size[0]}x{size[1]}",
+          "-framerate",str(fps),"-i","pipe:0","-frames:v",str(count),"-an",
+          "-c:v","libx264","-preset","veryfast","-crf","20","-threads",THREADS,
+          "-pix_fmt","yuv420p",str(temp)]
+    started=time.monotonic()
+    with tempfile.TemporaryFile() as errors:
+        proc=subprocess.Popen(args,stdin=subprocess.PIPE,stdout=subprocess.DEVNULL,stderr=errors)
+        try:
+            for frame in frames:
+                if hasattr(ctx,"check"): ctx.check()
+                if time.monotonic()-started > 7200: raise TimeoutError("Composizione oltre il tempo massimo.")
+                proc.stdin.write(frame.tobytes())
+            proc.stdin.close()
+            while proc.poll() is None:
+                if hasattr(ctx,"check"): ctx.check()
+                if time.monotonic()-started > 7200: raise TimeoutError("Codifica oltre il tempo massimo.")
+                try: proc.wait(timeout=.2)
+                except subprocess.TimeoutExpired: pass
+            if proc.returncode:
+                errors.seek(0);raise ValueError("Codifica composizione fallita: "+errors.read().decode(errors="replace")[-4500:])
+            os.replace(temp,target)
+        except BaseException as exc:
+            if proc.poll() is None:
+                proc.terminate()
+                try: proc.wait(timeout=3)
+                except subprocess.TimeoutExpired: proc.kill();proc.wait()
+            if isinstance(exc,BrokenPipeError):
+                errors.seek(0);raise ValueError("Codifica composizione fallita: "+errors.read().decode(errors="replace")[-4500:]) from exc
+            raise
+        finally:
+            if proc.stdin and not proc.stdin.closed:
+                try: proc.stdin.close()
+                except BrokenPipeError: pass
+            temp.unlink(missing_ok=True)
+
+
+def last_video_frame(path: Path, size):
+    data=run(["ffmpeg","-hide_banner","-loglevel","error","-sseof","-0.1","-i",str(path),
+              "-vf",f"reverse,scale={size[0]}:{size[1]}","-frames:v","1","-f","image2pipe","-vcodec","png","pipe:1"])
+    with Image.open(BytesIO(data)) as image: return image.convert("RGB")
+
+
 def render_movie(root: Path, project: dict, narration: dict, ass: str | None, preview: bool, ctx) -> tuple[Path,dict]:
     from . import store
+    from .composition import asset_definitions, asset_key, normalize_scene, required_asset_ids
+    from .compositor import Compositor
     settings=project["settings"]
     size=(540,960) if preview else tuple(map(int,settings["resolution"].split("x")))
     fps=24 if preview else settings["fps"]
@@ -274,20 +325,39 @@ def render_movie(root: Path, project: dict, narration: dict, ass: str | None, pr
     timeline=narration["timeline"]
     work=root/"cache"/"render"; work.mkdir(parents=True,exist_ok=True)
     files=[]; last_frame=0
+    plans=[]
     for index,(scene,row) in enumerate(zip(project["scenes"],timeline)):
         ctx.progress(f"Montaggio scena {index+1}/{len(timeline)}",10+int(65*index/len(timeline)))
-        info=project["assets"]["images"].get(scene["id"])
-        if not info: raise ValueError(f"Manca l'immagine della scena {index+1}.")
-        if info.get("stale"): raise ValueError(f"Immagine della scena {index+1} non aggiornata. Rigenerala o confermala.")
+        available={a["id"] for a in asset_definitions(scene) if asset_key(scene["id"],a["id"]) in project["assets"]["images"]}
+        plan=normalize_scene(scene,float(row["end"])-float(row["start"]),settings,available,
+                             speech_duration=float(row.get("speech_end",row["end"]))-float(row["start"]))
+        plans.append(plan)
+        sources={}; signatures={}
+        for asset_id in sorted(required_asset_ids(plan)):
+            info=project["assets"]["images"].get(asset_key(scene["id"],asset_id))
+            if not info: raise ValueError(f"Manca l'immagine della scena {index+1} ({scene['id']}), asset '{asset_id}'. Caricala o generala.")
+            if info.get("stale"): raise ValueError(f"Immagine della scena {index+1} ({scene['id']}), asset '{asset_id}' non aggiornata. Rigenerala o confermala.")
+            sources[asset_id]=store.safe_path(root,info["path"]); signatures[asset_id]=info["sha256"]
         frame_end=round(row["end"]*fps)
         if index==len(timeline)-1: frame_end=__import__("math").ceil(total*fps)
         frames=frame_end-last_frame; last_frame=frame_end
         if frames<1: raise ValueError("Una scena dura meno di un fotogramma.")
-        sig=store.digest([info["sha256"],scene["motion"],settings["fit"],frames,size,fps,"renderer-v1"])
+        if plan["legacy"]:
+            # Preserve the original filters, frames, cache key and encode path.
+            sig=store.digest([signatures["default"],scene["motion"],settings["fit"],frames,size,fps,"renderer-v1"])
+        else:
+            sig=store.digest([plan,signatures,settings["fit"],frames,size,fps,
+                              files[-1].name if files and plan["transition"]["type"]!="cut" else None,"composition-v2"])
         segment=work/(sig+".mp4")
         if not segment.exists():
-            render_segment(store.safe_path(root,info["path"]),segment,scene,frames,size,fps,settings,ctx)
+            if plan["legacy"]:
+                render_segment(sources["default"],segment,scene,frames,size,fps,settings,ctx)
+            else:
+                previous=last_video_frame(files[-1],size) if files and plan["transition"]["type"]!="cut" else None
+                compositor=Compositor(plan,sources,size,fps,settings["fit"],previous)
+                encode_frames(compositor.frames(frames),segment,frames,size,fps,ctx)
         files.append(segment)
+    store.atomic_json(root/"output"/"composition.json",{"version":"composition-v1","scenes":plans})
     concat=work/"concat.txt"
     concat.write_text("\n".join("file '"+p.name+"'" for p in files),"utf-8")
     silent=work/"silent.part.mp4"

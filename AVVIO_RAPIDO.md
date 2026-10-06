@@ -32,13 +32,13 @@ richiede Internet per le dipendenze. Non scarica modelli AI.
 
 ## 3. Prova senza modelli
 
-Premi **Prova la demo senza modelli**. Viene creato un progetto dimostrativo con
+Premi **Esplora la demo**. Viene creato un progetto dimostrativo con
 cartelli segnaposto, voce eSpeak robotica e sottotitoli con tempi stimati. Serve a
 verificare la pipeline, non e' un esempio della qualita' artistica finale.
 
 ## 4. Il flusso consigliato con immagini create altrove
 
-1. Crea un progetto, incolla il racconto e premi **Dividi in scene**.
+1. Crea un progetto, incolla il copione e premi **Dividi in scene**.
 2. Controlla e modifica il testo di ciascuna scena. **Salva modifiche**.
 3. Premi **Scarica prompt per ChatGPT**. Usa il file per preparare le immagini.
 4. Carica le immagini nelle scene, oppure seleziona `01.png`, `02.png`... con
@@ -68,7 +68,15 @@ bash scripts/start-ai.sh voice
 Avvia solo i servizi che servono. Non attivare tutti i modelli insieme sul PC
 poco potente.
 
-## 5. Spegni e riprendi
+## 5. Video educational
+
+Per un video educational, seleziona **Educational** nella sezione Regia.
+Usa **Composizione visiva** dentro le scene per asset multipli, titoli,
+reframing, annotazioni e transizioni. I vecchi progetti restano in modalita'
+Narrativa / classica. La guida passo passo, la demo di 72 secondi e gli esempi
+JSON sono in **[docs/GUIDA_UTENTE.md](docs/GUIDA_UTENTE.md)**.
+
+## 6. Spegni e riprendi
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\scripts\stop.ps1
